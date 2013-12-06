@@ -1,0 +1,286 @@
+E
+Block ID of buffer0 is Empty
+Block ID of buffer1 is Empty
+Block ID of buffer2 is Empty
+Block ID of buffer3 is Empty
+Block ID of buffer4 is Empty
+Block ID of buffer5 is Empty
+Block ID of buffer6 is Empty
+Block ID of buffer7 is Empty
+Block ID of buffer8 is Empty
+Block ID of buffer9 is Empty
+Riley -105.7 -24.3 is added into the bintree
+Search 69.3 29.7 18.0 returned the following watchers:
+Watcher search caused 1 bintree nodes to be visited.
+Taylor 21.2 -38.6 is added into the bintree
+I
+Riley -105.7 -24.3
+Taylor 21.2 -38.6
+Block ID of buffer0 is 5
+Block ID of buffer1 is 4
+Block ID of buffer2 is 3
+Block ID of buffer3 is 7
+Block ID of buffer4 is 2
+Block ID of buffer5 is 1
+Block ID of buffer6 is 0
+Block ID of buffer7 is 6
+Block ID of buffer8 is Empty
+Block ID of buffer9 is Empty
+Search -106.7 -58.3 0.0 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Search 51.8 28.9 18.0 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Search 80.5 8.3 170.4 returned the following watchers:
+Taylor 21.2 -38.6
+Watcher search caused 3 bintree nodes to be visited.
+NevaehHasAReallyReallyReallyLongName -11.0 63.1 is added into the bintree
+Search 103.8 24.0 142.9 returned the following watchers:
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Taylor 21.2 -38.6
+Watcher search caused 5 bintree nodes to be visited.
+Dominic -79.2 37.3 is added into the bintree
+Search -128.4 87.8 11.7 returned the following watchers:
+Watcher search caused 4 bintree nodes to be visited.
+Search 142.0 82.7 125.1 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Tristan -117.1 5.0 is added into the bintree
+Sean -105.7 -24.3 duplicates a watcher already in the bintree
+Taylor 21.2 -38.6 is removed from the bintree
+Search -35.6 15.9 358.8 returned the following watchers:
+Riley -105.7 -24.3
+Tristan -117.1 5.0
+Dominic -79.2 37.3
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Watcher search caused 9 bintree nodes to be visited.
+Search 16.7 -78.9 297.8 returned the following watchers:
+Riley -105.7 -24.3
+Tristan -117.1 5.0
+Dominic -79.2 37.3
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Watcher search caused 9 bintree nodes to be visited.
+Search 108.7 -85.3 75.9 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+I
+I
+Riley -105.7 -24.3
+I
+Tristan -117.1 5.0
+I
+Dominic -79.2 37.3
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+E
+Block ID of buffer0 is 13
+Block ID of buffer1 is 12
+Block ID of buffer2 is 11
+Block ID of buffer3 is 10
+Block ID of buffer4 is 9
+Block ID of buffer5 is 8
+Block ID of buffer6 is 7
+Block ID of buffer7 is 20
+Block ID of buffer8 is 19
+Block ID of buffer9 is 17
+Search -16.9 -31.9 0.0 returned the following watchers:
+Watcher search caused 3 bintree nodes to be visited.
+Search 140.0 -26.0 360.7 returned the following watchers:
+Riley -105.7 -24.3
+Tristan -117.1 5.0
+Dominic -79.2 37.3
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Watcher search caused 9 bintree nodes to be visited.
+Search -161.5 -56.0 47.3 returned the following watchers:
+Watcher search caused 3 bintree nodes to be visited.
+Alexa -50.2 88.4 is added into the bintree
+Search 120.6 -20.3 232.4 returned the following watchers:
+Riley -105.7 -24.3
+Dominic -79.2 37.3
+Alexa -50.2 88.4
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Watcher search caused 11 bintree nodes to be visited.
+Search 40.1 -67.0 163.5 returned the following watchers:
+Riley -105.7 -24.3
+Dominic -79.2 37.3
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Watcher search caused 11 bintree nodes to be visited.
+Search -67.2 90.0 92.5 returned the following watchers:
+Dominic -79.2 37.3
+Alexa -50.2 88.4
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Watcher search caused 11 bintree nodes to be visited.
+Search 83.7 3.0 0.0 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Search -178.5 -31.6 5.4 returned the following watchers:
+Watcher search caused 3 bintree nodes to be visited.
+Search 117.1 -9.7 115.9 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Search -168.9 -14.0 80.7 returned the following watchers:
+Riley -105.7 -24.3
+Tristan -117.1 5.0
+Watcher search caused 9 bintree nodes to be visited.
+I
+I
+Riley -105.7 -24.3
+I
+Tristan -117.1 5.0
+I
+Dominic -79.2 37.3
+I
+Alexa -50.2 88.4
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+E
+Block ID of buffer0 is 13
+Block ID of buffer1 is 12
+Block ID of buffer2 is 11
+Block ID of buffer3 is 10
+Block ID of buffer4 is 9
+Block ID of buffer5 is 8
+Block ID of buffer6 is 7
+Block ID of buffer7 is 25
+Block ID of buffer8 is 24
+Block ID of buffer9 is 5
+Search -34.3 53.8 0.0 returned the following watchers:
+Watcher search caused 6 bintree nodes to be visited.
+John 10.7 -80.4 is added into the bintree
+Search 31.3 -53.4 128.0 returned the following watchers:
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+John 10.7 -80.4
+Watcher search caused 11 bintree nodes to be visited.
+Penny 55.3 -80.3 is added into the bintree
+Search 50.8 -46.0 118.6 returned the following watchers:
+John 10.7 -80.4
+Penny 55.3 -80.3
+Watcher search caused 18 bintree nodes to be visited.
+I
+I
+Riley -105.7 -24.3
+I
+Tristan -117.1 5.0
+I
+Dominic -79.2 37.3
+I
+Alexa -50.2 88.4
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+I
+I
+I
+I
+John 10.7 -80.4
+Penny 55.3 -80.3
+E
+E
+E
+Block ID of buffer0 is 29
+Block ID of buffer1 is 28
+Block ID of buffer2 is 27
+Block ID of buffer3 is 37
+Block ID of buffer4 is 36
+Block ID of buffer5 is 26
+Block ID of buffer6 is 25
+Block ID of buffer7 is 35
+Block ID of buffer8 is 34
+Block ID of buffer9 is 33
+Search 62.9 -58.7 170.4 returned the following watchers:
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+John 10.7 -80.4
+Penny 55.3 -80.3
+Watcher search caused 19 bintree nodes to be visited.
+Search 139.7 24.7 16.7 returned the following watchers:
+Watcher search caused 3 bintree nodes to be visited.
+John 10.7 -80.4 is removed from the bintree
+I
+I
+Riley -105.7 -24.3
+I
+Tristan -117.1 5.0
+I
+Dominic -79.2 37.3
+I
+Alexa -50.2 88.4
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Penny 55.3 -80.3
+Block ID of buffer0 is 29
+Block ID of buffer1 is 28
+Block ID of buffer2 is 27
+Block ID of buffer3 is 37
+Block ID of buffer4 is 36
+Block ID of buffer5 is 13
+Block ID of buffer6 is 12
+Block ID of buffer7 is 11
+Block ID of buffer8 is 10
+Block ID of buffer9 is 9
+Search -39.0 -18.5 92.5 returned the following watchers:
+Riley -105.7 -24.3
+Tristan -117.1 5.0
+Dominic -79.2 37.3
+NevaehHasAReallyReallyReallyLongName -11.0 63.1
+Watcher search caused 11 bintree nodes to be visited.
+NevaehHasAReallyReallyReallyLongName -11.0 63.1 is removed from the bintree
+I
+I
+Riley -105.7 -24.3
+I
+Tristan -117.1 5.0
+I
+Dominic -79.2 37.3
+Alexa -50.2 88.4
+Penny 55.3 -80.3
+Block ID of buffer0 is 29
+Block ID of buffer1 is 28
+Block ID of buffer2 is 27
+Block ID of buffer3 is 37
+Block ID of buffer4 is 36
+Block ID of buffer5 is 5
+Block ID of buffer6 is 4
+Block ID of buffer7 is 3
+Block ID of buffer8 is 7
+Block ID of buffer9 is 17
+Search -156.2 26.0 297.8 returned the following watchers:
+Riley -105.7 -24.3
+Tristan -117.1 5.0
+Dominic -79.2 37.3
+Alexa -50.2 88.4
+Penny 55.3 -80.3
+Watcher search caused 9 bintree nodes to be visited.
+Search 69.0 26.6 349.4 returned the following watchers:
+Riley -105.7 -24.3
+Tristan -117.1 5.0
+Dominic -79.2 37.3
+Alexa -50.2 88.4
+Penny 55.3 -80.3
+Watcher search caused 9 bintree nodes to be visited.
+Riley -105.7 -24.3 is removed from the bintree
+Dominic -79.2 37.3 is removed from the bintree
+Tristan -117.1 5.0 is removed from the bintree
+Search 114.7 46.0 2.4 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Search -56.2 -73.1 15.8 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Search -94.6 17.3 49.8 returned the following watchers:
+Watcher search caused 2 bintree nodes to be visited.
+Alexa -50.2 88.4 is removed from the bintree
+Penny 55.3 -80.3
+Block ID of buffer0 is 29
+Block ID of buffer1 is 28
+Block ID of buffer2 is 27
+Block ID of buffer3 is 37
+Block ID of buffer4 is 36
+Block ID of buffer5 is 5
+Block ID of buffer6 is 6
+Block ID of buffer7 is 3
+Block ID of buffer8 is 7
+Block ID of buffer9 is 4
+Penny 55.3 -80.3 is removed from the bintree
+E
+Block ID of buffer0 is 27
+Block ID of buffer1 is 36
+Block ID of buffer2 is 29
+Block ID of buffer3 is 28
+Block ID of buffer4 is 37
+Block ID of buffer5 is 5
+Block ID of buffer6 is 6
+Block ID of buffer7 is 3
+Block ID of buffer8 is 7
+Block ID of buffer9 is 4
+Number of cache hits: 1103
+Number of cache misses: 709
+Number of disk reads: 709
+Number of disk writes: 106
