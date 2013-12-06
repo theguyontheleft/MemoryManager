@@ -12,43 +12,28 @@ import junit.framework.TestCase;
 @SuppressWarnings( "all" )
 public class BintreeTest extends TestCase
 {
+
     /**
-     * Tests the default constructor
+     * tests insert
      */
-    public void testBintree()
+    public void testInsert()
     {
         Bintree<Point2D.Double, String> testTree =
                 new Bintree<Point2D.Double, String>();
 
-        assert true;
-        // assertEquals( 0, testTree.treeDepth() );
+        Point2D.Double testPoint = new Point2D.Double();
+        testPoint.setLocation( -100, -80 );
+        String name = "John";
+
+        Point2D.Double testPoint2 = new Point2D.Double();
+        testPoint2.setLocation( 10, -80 );
+        String name2 = "Paul";
+
+        testTree.insert( testPoint, name );
+
+        testTree.insert( testPoint2, name2 );
+
     }
-    //
-    // /**
-    // * tests insert
-    // */
-    // public void testInsert0()
-    // {
-    // Bintree<Point2D.Double, String> testTree =
-    // new Bintree<Point2D.Double, String>();
-    //
-    // Point2D.Double testPoint = new Point2D.Double();
-    // testPoint.setLocation( -100, -80 );
-    // String name = "John";
-    //
-    // Point2D.Double testPoint2 = new Point2D.Double();
-    // testPoint2.setLocation( 10, -80 );
-    // String name2 = "Paul";
-    //
-    // testTree.insert( testPoint, name );
-    //
-    // assertEquals( 0, testTree.treeDepth() );
-    //
-    // testTree.insert( testPoint2, name2 );
-    //
-    // assertEquals( true, testTree.contains( testPoint2 ) );
-    //
-    // }
     //
     // /**
     // * Tests the insert to a depth of 6

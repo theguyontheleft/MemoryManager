@@ -1,7 +1,9 @@
+import java.awt.geom.Point2D;
+
 /**
  * 
  * @author Matthew Luckam mcl209
- * @author James Dagres 
+ * @author James Dagres
  * @version Oct 12, 2013
  */
 @SuppressWarnings( "all" )
@@ -39,6 +41,13 @@ public class NodeLeaf implements Node
      */
     public NodeLeaf( byte[] e )
     {
+        isLeaf = 1;
+
+        watcherRecordHandle = e;
+    }
+
+    public NodeLeaf( byte[] e, byte[] myCurrentHandle )
+    {
         isLeaf = e[0];
         watcherRecordHandle = new byte[4];
 
@@ -46,6 +55,8 @@ public class NodeLeaf implements Node
         {
             watcherRecordHandle[i - 1] = e[i];
         }
+
+        currentHandle = myCurrentHandle;
     }
 
     /**
@@ -116,8 +127,9 @@ public class NodeLeaf implements Node
 
         return toReturn;
     }
+    
 
-    public boolean eqauls( byte[] handle )
+    public boolean eqaulTo( byte[] handle )
     {
         for ( int i = 0; i < handle.length; i++ )
         {

@@ -55,26 +55,26 @@ public class NodeInternal implements Node
         currentHandle = newCurrentHandle;
     }
 
-    public NodeInternal( byte[] handles, byte[] newCurrentHandle )
-    {
-        isLeaf = handles[0];
-        handleLeft = new byte[9];
-        handleRight = new byte[9];
-        currentHandle = new byte[9];
-
-        // sets left handle
-        for ( int i = 1; i < 5; i++ )
-        {
-            handleLeft[i - 1] = handles[i];
-        }
-
-        for ( int i = 5; i < 9; i++ )
-        {
-            handleRight[i - 5] = handles[i];
-        }
-
-        currentHandle = newCurrentHandle;
-    }
+    // public NodeInternal( byte[] handles, byte[] newCurrentHandle )
+    // {
+    // isLeaf = handles[0];
+    // handleLeft = new byte[9];
+    // handleRight = new byte[9];
+    // currentHandle = new byte[9];
+    //
+    // // sets left handle
+    // for ( int i = 1; i < 5; i++ )
+    // {
+    // handleLeft[i - 1] = handles[i];
+    // }
+    //
+    // for ( int i = 5; i < 9; i++ )
+    // {
+    // handleRight[i - 5] = handles[i];
+    // }
+    //
+    // currentHandle = newCurrentHandle;
+    // }
 
     /**
      * parameterized constructor with two pointer

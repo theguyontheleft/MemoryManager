@@ -67,7 +67,8 @@ public class Bintree<Key, E>
 
         flyWeightHandle = memoryManager.insert( new byte[16] ).clone();
         flyWeight = new NodeLeaf( flyWeightHandle );
-        memoryManager.insert( flyWeight.serialize() );
+        byte[] currentHandle = memoryManager.insert( flyWeight.serialize() );
+        flyWeight.setCurrentHandle( currentHandle );
 
         root = flyWeight;
 
@@ -87,7 +88,14 @@ public class Bintree<Key, E>
         int tempTreeDepth = 0;
         InsertMapping insertMap = new InsertMapping();
 
-        root = insertHelper( root, k, val, tempTreeDepth, insertMap );
+        byte[] watcherHandle = new byte[4];
+
+        Watcher newWatcher =
+                new Watcher( ((Point2D) k).getX(), ((Point2D) k).getY(),
+                        (String) val );
+        watcherHandle = memoryManager.insert( newWatcher.serialize() ).clone();
+
+        root = insertHelper( root, k, watcherHandle, tempTreeDepth, insertMap );
         nodeCount++;
     }
 
@@ -104,18 +112,25 @@ public class Bintree<Key, E>
      *            level of the tree the item is currently on
      * @return inserted node
      */
-    private Node insertHelper( Node node, Key k, E val, int level,
-            InsertMapping map )
+    private Node insertHelper( Node node, Key k, byte[] watcherHandle,
+            int level, InsertMapping map )
     {
         // Base Case - leaf node with no value
-        if ( node.isLeaf()
-                && ((NodeLeaf) node).getElement().equals( flyWeightHandle ) )
+        if ( node.isLeaf() && ((NodeLeaf) node).eqaulTo( flyWeightHandle ) )
         {
-            byte[] watcherHandle = new byte[4];
+            // deletes old instance of the leaf node
+            memoryManager.delete( node.getCurrentHandle() );
 
-            watcherHandle =
-                    memoryManager.insert( watcherAsByte( k, val ) ).clone();
-            ((NodeLeaf) node).setElement( watcherHandle );
+            // creates new leaf node with a handle to the newly created watcher
+            NodeLeaf newLeaf = new NodeLeaf( watcherHandle );
+            // inserts to memory manager and returns a handle to itself
+            byte[] newLeafHandle =
+                    memoryManager.insert( newLeaf.serialize() ).clone();
+            // sets its current handle
+            newLeaf.setCurrentHandle( newLeafHandle );
+
+            // TODO need to write this updated handle to memory manager at some
+            // point
 
             if ( level > treeDepth )
             {
@@ -125,10 +140,9 @@ public class Bintree<Key, E>
             return newLeaf;
         }
         // leaf node with value
-        else if ( node.isLeaf()
-                && !((NodeLeaf) node).getElement().equals( flyWeightHandle ) )
+        else if ( node.isLeaf() && !((NodeLeaf) node).eqaulTo( flyWeightHandle ) )
         {
-            NodeInternal newInternal = new NodeInternal( flyWeight );
+            NodeInternal newInternal = new NodeInternal( flyWeightHandle );
 
             treeDepth++;
 
@@ -137,9 +151,12 @@ public class Bintree<Key, E>
             double tempLowXBound = map.getLowXBound();
             double tempLowYBound = map.getLowYBound();
 
+            Watcher watcher =
+                    (Watcher) deSerialize( ((NodeLeaf) node).getElement() );
+
             // inserts leaf node previously at this location
-            insertHelper( newInternal, ((Key) ((NodeLeaf) node).getKey()),
-                    ((E) ((NodeLeaf) node).getElement()), level, map );
+            insertHelper( newInternal, (Key) watcher.getWatcherPoint(),
+                    ((NodeLeaf) node).getCurrentHandle(), level, map );
 
             map.setUpXBound( tempUpXBound );
             map.setUpYBound( tempUpYBound );
@@ -147,7 +164,10 @@ public class Bintree<Key, E>
             map.setLowYBound( tempLowYBound );
 
             // inserts new data into a leaf node
-            node = insertHelper( newInternal, k, val, level, map );
+            node = insertHelper( newInternal, k, watcherHandle, level, map );
+
+            // TODO update internal node
+            memoryManager.insert( newInternal.serialize() );
         }
 
         // divides on the x axis
@@ -163,14 +183,16 @@ public class Bintree<Key, E>
             {
                 map.setLowXBound( xWidth + map.getLowXBound() );
                 ((NodeInternal) node).setRight( insertHelper(
-                        ((NodeInternal) node).getRight(), k, val, level, map ) );
+                        (Node) deSerialize( ((NodeInternal) node).getRight() ),
+                        k, watcherHandle, level, map ).serialize() );
             }
             // sets node to the left
             else
             {
                 map.setUpXBound( map.getUpXBound() - xWidth );
                 ((NodeInternal) node).setLeft( insertHelper(
-                        ((NodeInternal) node).getLeft(), k, val, level, map ) );
+                        (Node) deSerialize( ((NodeInternal) node).getLeft() ),
+                        k, watcherHandle, level, map ).serialize() );
             }
         }
         // divides on the y axis
@@ -187,7 +209,8 @@ public class Bintree<Key, E>
                 map.setLowYBound( yHeight + map.getLowYBound() );
 
                 ((NodeInternal) node).setRight( insertHelper(
-                        ((NodeInternal) node).getRight(), k, val, level, map ) );
+                        (Node) deSerialize( ((NodeInternal) node).getRight() ),
+                        k, watcherHandle, level, map ).serialize() );
             }
             // sets node to the left
             else
@@ -195,55 +218,97 @@ public class Bintree<Key, E>
                 map.setUpYBound( map.getUpYBound() - yHeight );
 
                 ((NodeInternal) node).setLeft( insertHelper(
-                        ((NodeInternal) node).getLeft(), k, val, level, map ) );
+                        (Node) deSerialize( ((NodeInternal) node).getLeft() ),
+                        k, watcherHandle, level, map ).serialize() );
             }
         }
         return node;
     }
 
-    private Node deSerialize( byte[] handle )
+    private Object deSerialize( byte[] handle )
     {
-        Node toReturn = null;
+        Object toReturn = null;
 
-        byte[] newNode = memoryManager.getNode( handle );
+        byte[] newObject = memoryManager.getObject( handle ).clone();
 
         // create internal node
-        if ( newNode[0] == 0 )
+        if ( newObject[0] == 0 && newObject.length == 9 )
         {
-            toReturn = new NodeLeaf( newNode );
+            byte[] handleLeft = new byte[9];
+            byte[] handleRight = new byte[9];
+
+            // sets left handle
+            for ( int i = 1; i < 5; i++ )
+            {
+                handleLeft[i - 1] = newObject[i];
+            }
+
+            for ( int i = 5; i < 9; i++ )
+            {
+                handleRight[i - 5] = newObject[i];
+            }
+
+            toReturn = new NodeInternal( handleLeft, handleRight, handle );
+
         }
         // creates leaf node
-        else if ( newNode[0] == 1 )
+        else if ( newObject[0] == 1 && newObject.length == 5 )
         {
-            toReturn = new NodeInternal();
+            // creates a node from the information in the memory manager
+            byte[] watcherRecordHandle = new byte[5];
+            for ( int i = 1; i < 5; i++ )
+            {
+                watcherRecordHandle[i - 1] = newObject[i];
+            }
+
+            toReturn = new NodeLeaf( watcherRecordHandle, handle );
+        }
+        // watcher object
+        else
+        {
+            // variables to create a watcher
+            double x = 0.0;
+            double y = 0.0;
+            String name = null;
+
+            byte[] xByte = new byte[8];
+            byte[] yByte = new byte[8];
+            byte[] wName = new byte[newObject.length - 16];
+
+            // gets values from object
+            for ( int i = 0; i < newObject.length; i++ )
+            {
+                if ( i < 8 )
+                {
+                    xByte[i] = newObject[i];
+                }
+                else if ( i >= 8 && i < 16 )
+                {
+                    yByte[i - 8] = newObject[i];
+                }
+                else
+                {
+                    wName[i - 16] = newObject[i];
+                }
+            }
+
+            // convert byte arrays
+            x = ByteBuffer.wrap( xByte ).getDouble();
+            y = ByteBuffer.wrap( yByte ).getDouble();
+            name = new String( wName );
+
+            // create watcher
+            toReturn = new Watcher( x, y, name );
+
         }
 
         return toReturn;
     }
 
-    private byte[] watcherAsByte( Key k, E val )
+    private Point2D.Double getPoint( byte[] hanlde )
     {
-        byte[] x;
-        byte[] y;
-        byte[] name;
-        x = ByteBuffer.allocate( 8 ).putDouble( ((Point2D) k).getX() ).array();
-        y = ByteBuffer.allocate( 8 ).putDouble( ((Point2D) k).getY() ).array();
-        name = ((String) val).getBytes();
-        byte[] data = new byte[16 + name.length];
-        int currentPos = 0;
-        for ( int i = 0; i < 8; currentPos++, i++ )
-        {
-            data[currentPos] = x[i];
-        }
-        for ( int i = 0; i < 8; currentPos++, i++ )
-        {
-            data[currentPos] = y[i];
-        }
-        for ( int i = 0; i < name.length; i++, currentPos++ )
-        {
-            data[currentPos] = name[i];
-        }
-        return data;
+
+        return null;
     }
 
     // /**

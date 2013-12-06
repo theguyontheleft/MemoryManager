@@ -1,12 +1,11 @@
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 /**
  * @author Jimmy Dagres
  * @author Matt Luckam
  * 
  * @version Dec 6, 2013
- *
+ * 
  */
 public class MemoryManager
 {
@@ -45,7 +44,7 @@ public class MemoryManager
         return ByteBuffer.allocate( 4 ).putInt( handleLocation ).array();
     }
 
-    public byte[] getNode( byte[] handle )
+    public byte[] getObject( byte[] handle )
     {
         byte[] toReturn = null;
 
@@ -69,7 +68,63 @@ public class MemoryManager
                 toReturn[i] = array[position];
             }
         }
+        // return watcher
+        else
+        {
+            byte[] size = new byte[2];
+
+            for ( int i = 0; i < 2; i++, position++ )
+            {
+                size[i] = array[position];
+            }
+
+            int sizeOfMessage = ByteBuffer.wrap( size ).getInt();
+
+            toReturn = new byte[sizeOfMessage];
+
+            for ( int i = 0; i < sizeOfMessage; i++, position++ )
+            {
+                toReturn[i] = array[position];
+            }
+        }
 
         return toReturn;
+    }
+
+    public void delete( byte[] handle )
+    {
+        int handleLocation = ByteBuffer.wrap( handle ).getInt();
+
+        // delete internal node
+        if ( array[handleLocation] == 0 )
+        {
+            for ( int i = 0; i < 9; i++, handleLocation++ )
+            {
+                array[handleLocation] = 0;
+            }
+        }
+        // delete leaf node
+        else if ( array[handleLocation] == 1 )
+        {
+            for ( int i = 0; i < 5; i++, handleLocation++ )
+            {
+                array[handleLocation] = 0;
+            }
+        }
+        // delete a watcher
+        else
+        {
+            byte[] size = new byte[2];
+            for ( int i = 0; i < 2; i++, handleLocation++ )
+            {
+                size[i] = array[handleLocation];
+            }
+            int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
+
+            for ( int i = 0; i < sizeOfMessage; i++, handleLocation++ )
+            {
+                array[handleLocation] = 0;
+            }
+        }
     }
 }
