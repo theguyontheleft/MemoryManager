@@ -6,8 +6,12 @@ import junit.framework.TestCase;
  */
 public class GeneralTest extends TestCase
 {
+    /**
+     * 
+     */
     public void testEquals()
     {
+        assertEquals( true, true );
     }
 
 }

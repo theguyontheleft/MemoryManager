@@ -1,6 +1,4 @@
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 import junit.framework.TestCase;
 
@@ -14,6 +12,26 @@ import junit.framework.TestCase;
  */
 public class BufferPoolTest extends TestCase
 {
+    /**
+     * Tests the overlapping modifications of the bufferpool, test the insert
+     * and getbytes functions
+     */
+    public void testBufferAltercations()
+    {
+        byte[] byteToTest = new byte[20];
+        byte[] byteToTest1 = new byte[20];
+
+        BufferPool pool = new BufferPool( 4, 10 );
+
+        pool.insert( byteToTest, 20, 6 );
+        pool.getbytes( byteToTest1, 20, 6 );
+
+        for ( int j = 0; j < 20; j++ )
+        {
+            System.out.println("VALUE: " + byteToTest[j]);
+            assert (byteToTest[j] == byteToTest1[j]);
+        }
+    }
 
     /**
      * tests the constructor
@@ -22,27 +40,11 @@ public class BufferPoolTest extends TestCase
      */
     public void testBufferPool() throws FileNotFoundException
     {
-        RandomAccessFile test = new RandomAccessFile( "smallTest", "rw" );
-        BufferPool pool = new BufferPool( 2, 8 );
+        BufferPool pool = new BufferPool( 4, 10 );
 
         assertEquals( 0, pool.getCacheHits() );
         assertEquals( 0, pool.getCacheMisses() );
         assertEquals( 0, pool.getDiskReads() );
         assertEquals( 0, pool.getDiskWrites() );
-    }
-
-    /**
-     * tests insert() function
-     * 
-     * @throws IOException
-     */
-    public void testInsert() throws IOException
-    {
-        RandomAccessFile test = new RandomAccessFile( "mediumTest.dat", "rw" );
-        BufferPool pool = new BufferPool( 2, 8 );
-
-        pool.insert( new byte[4], 4, 10 );
-
-        assertEquals( true, true );
     }
 }

@@ -3,7 +3,7 @@ import java.awt.geom.Point2D;
 /**
  * 
  * @author Matthew Luckam mcl209
- * @author James Dagres
+ * @author James Dagres jdagres
  * @version Oct 12, 2013
  */
 @SuppressWarnings( "all" )

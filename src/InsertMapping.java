@@ -2,7 +2,7 @@
  * Defines the bounds of the box of the point being inserted
  * 
  * @author Matthew Luckam mcl209
- * @author James Dagres
+ * @author James Dagres jdagres
  * @version Oct 12, 2013
  * 
  */
