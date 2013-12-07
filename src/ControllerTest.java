@@ -2,8 +2,7 @@ import junit.framework.TestCase;
 
 /**
  * 
- * @author Jimmy Dagres 905748682
- * 
+ * @author Jimmy Dagres 
  * @author Matt Luckam
  * 
  *         This class tests the controller class

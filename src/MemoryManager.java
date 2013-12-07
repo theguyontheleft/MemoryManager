@@ -91,12 +91,12 @@ public class MemoryManager
         return toReturn;
     }
 
-    public void delete( byte[] handle )
+    public void delete( byte[] handle, boolean isLeaf )
     {
         int handleLocation = ByteBuffer.wrap( handle ).getInt();
 
         // delete internal node
-        if ( array[handleLocation] == 0 )
+        if ( array[handleLocation] == 0 && isLeaf )
         {
             for ( int i = 0; i < 9; i++, handleLocation++ )
             {
@@ -104,7 +104,7 @@ public class MemoryManager
             }
         }
         // delete leaf node
-        else if ( array[handleLocation] == 1 )
+        else if ( array[handleLocation] == 1 && isLeaf )
         {
             for ( int i = 0; i < 5; i++, handleLocation++ )
             {
@@ -118,6 +118,7 @@ public class MemoryManager
             for ( int i = 0; i < 2; i++, handleLocation++ )
             {
                 size[i] = array[handleLocation];
+                array[handleLocation] = 0;
             }
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
 
