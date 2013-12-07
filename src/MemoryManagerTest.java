@@ -53,4 +53,18 @@ public class MemoryManagerTest extends TestCase
             System.err.print( "Error when testing the memory Pool: " + ex );
         }
     }
+    
+    /**
+     * Tests the MemoryBuffer object used in the freelist
+     */
+    public void testMemoryBuffer()
+    {
+        MemoryBuffer memoryBuffer_ = new MemoryBuffer();
+        
+        memoryBuffer_.setLength( 1337 );
+        assertEquals(memoryBuffer_.getLength(), 1337);
+        
+        memoryBuffer_.setPosition( 1337 );
+        assertEquals(memoryBuffer_.getPosition(), 1337);
+    }
 }

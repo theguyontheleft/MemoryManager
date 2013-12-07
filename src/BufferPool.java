@@ -124,9 +124,9 @@ public class BufferPool implements BufferPoolADT
         // toInsert = ByteBuffer.wrap( pool.getValue().getBlock() );
         // toInsert.position( pos - (blockNumberInFile * blockSize) );
         // toInsert.put( space, 0, sz );
-        //
-        // pool.getValue().setBlock( toInsert.array() );
-        // pool.getValue().setDirtyBit( true );
+
+        pool.getValue().setBlock( toInsert.array() ); // TODO: is this still necessary
+        pool.getValue().setDirtyBit( true );
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Old
         // int blockNumberInFile = pos / blockSize;
@@ -251,9 +251,9 @@ public class BufferPool implements BufferPoolADT
             {
                 // TODO: remove this is for debugging
                 // purposes
-                // space[sz - bytesToRead] = (byte) (sz - bytesToRead);
-                space[sz - bytesToRead] =
-                        pool.getValue().getBlock()[startingByteInBlock];
+                space[sz - bytesToRead] = (byte) (sz - bytesToRead);
+                // space[sz - bytesToRead] =
+                // pool.getValue().getBlock()[startingByteInBlock];
             }
 
             // Update the remaining bytes to read and set pos to 0
