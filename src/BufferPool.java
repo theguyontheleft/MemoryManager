@@ -19,13 +19,15 @@ public class BufferPool implements BufferPoolADT
     /**
      * file to access
      */
-
     private static MemoryPool memoryPool_;
-
     /**
      * block size of buffers in bytes
      */
     private int blockSize;
+    /**
+     * Stores the number of buffers
+     */
+    private int numberOfBuffers_;
     /**
      * number of cache hits
      */
@@ -42,7 +44,6 @@ public class BufferPool implements BufferPoolADT
      * number of disks writes
      */
     private int diskWrites;
-
     // static variables to help improvement //
     /**
      * used in insert()
@@ -59,14 +60,15 @@ public class BufferPool implements BufferPoolADT
      * 
      * @param newDisk
      *            name of file
-     * @param maxPoolSize
+     * @param numberOfBuffers
      *            maximum number of buffers in the pool
      * @param newBlockSize
+     *            size of the block
      */
-    public BufferPool( int maxPoolSize,
+    public BufferPool( int numberOfBuffers,
             int newBlockSize )
     {
-        pool = new AList<Buffer>( maxPoolSize );
+        pool = new AList<Buffer>( numberOfBuffers );
 
         try
         {
@@ -78,12 +80,13 @@ public class BufferPool implements BufferPoolADT
         }
 
         blockSize = newBlockSize;
+        numberOfBuffers_ = numberOfBuffers;
 
         toInsert = ByteBuffer.allocate( newBlockSize );
         temp = new byte[blockSize];
 
         // fills pool with empty buffers
-        for ( int i = 0; i < maxPoolSize; i++ )
+        for ( int i = 0; i < numberOfBuffers_; i++ )
         {
             pool.append( new Buffer( new byte[newBlockSize], -1 ) );
         }
@@ -112,12 +115,14 @@ public class BufferPool implements BufferPoolADT
         // if buffer was not in the buffer pool
         if ( blockNumberInPool == -1 )
         {
-            this.getbytes( new byte[space.length], sz, pos );
+            // this.getbytes( new byte[space.length], sz, pos ); Commented out
+            this.getbytes( space, sz, pos );
             blockNumberInPool = this.contains( blockNumberInFile );
         }
-        //
+
         // // inputs record in given location in buffer
-        // toInsert = Bytion( pos - (blockNumberInFile * blockSize) );
+        // toInsert = ByteBuffer.wrap( pool.getValue().getBlock() );
+        // toInsert.position( pos - (blockNumberInFile * blockSize) );
         // toInsert.put( space, 0, sz );
         //
         // pool.getValue().setBlock( toInsert.array() );
@@ -160,11 +165,10 @@ public class BufferPool implements BufferPoolADT
     {
         int blockNumberInFile = pos / blockSize;
         int blockNumberInPool = this.contains( blockNumberInFile );
-
         int bytesToRead = sz;
         int numberOfBytesInBlock = 0;
 
-        // Handle messages that span multiple blocks TODO
+        // Handle messages that span multiple blocks TODO test this
         while ( bytesToRead > 0 )
         {
             // if buffer is not in the pool
@@ -181,7 +185,6 @@ public class BufferPool implements BufferPoolADT
                         memoryPool_.getDisk().seek(
                                 pool.getValue().getBlockNumberFile()
                                         * blockSize );
-
                         memoryPool_.getDisk().write(
                                 pool.getValue().getBlock() );
                         diskWrites++;
@@ -198,16 +201,21 @@ public class BufferPool implements BufferPoolADT
                 {
                     // Whenever the file is being read from make sure the new
                     // position to read is less than the file length
-                    if ( pos < memoryPool_.getFileLength() )
+                    if ( pos < (int) (memoryPool_.getFileLength()) )
                     {
                         // moves to correct position in file
                         memoryPool_.getDisk().seek(
                                 blockNumberInFile * blockSize );
-                        // overwrites LRU block with new block values from file
-                        // temp = new byte[blockSize];
                         memoryPool_.getDisk().read( temp, 0, blockSize );
                         pool.getValue().setBlock( temp.clone() );
                         diskReads++;
+                    }
+                    else
+                    {
+                        // This can happen when the memory manager decides to
+                        // “grow” the size of its memory pool
+                        System.out
+                                .println( "bufferpool getbytes tried reading from outside the file." );
                     }
                 }
                 catch ( IOException e )
@@ -239,15 +247,17 @@ public class BufferPool implements BufferPoolADT
             // Read the bytes remaining in the block and less than the
             // bytesToRead variable
             for ( int i = 0; i < numberOfBytesInBlock
-                    && i < numberOfBytesInBlock; i++, startingByteInBlock++ )
+                    && 0 < bytesToRead; i++, startingByteInBlock++, bytesToRead-- )
             {
-                // space[i] = (byte) i; // TODO: remove this is for debugging
+                // TODO: remove this is for debugging
                 // purposes
-                space[i] = pool.getValue().getBlock()[startingByteInBlock];
+                // space[sz - bytesToRead] = (byte) (sz - bytesToRead);
+                space[sz - bytesToRead] =
+                        pool.getValue().getBlock()[startingByteInBlock];
             }
 
-            // resetTempPosition cause it
-            bytesToRead = bytesToRead - numberOfBytesInBlock;
+            // Update the remaining bytes to read and set pos to 0
+            // bytesToRead = bytesToRead - numberOfBytesInBlock;
             pos = 0;
         }
     }

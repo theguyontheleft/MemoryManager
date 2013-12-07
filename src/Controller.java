@@ -36,7 +36,7 @@ public class Controller
      */
     public Controller()
     {
-        // Initialize the data structures 
+        // Initialize the data structures
         // subscribersBintree_ = new Bintree<Point2D.Double, String>(); TODO
 
         // initialize memory variables
@@ -47,12 +47,12 @@ public class Controller
     }
 
     /**
-     * Creates the bufferpool *
+     * Creates the bufferpool
      */
     void createBufferPool()
     {
         bufPool_ =
-                new BufferPool( this.blockSize_, this.recSize_ );
+                new BufferPool( this.numberBuffs_, this.blockSize_ );
     }
 
     /**
@@ -185,7 +185,6 @@ public class Controller
         {
             // subscribersBintree_.printWrapper(); // TODO Uncomment
         }
-
     }
 
     /**
