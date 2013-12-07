@@ -27,11 +27,17 @@ public class BintreeTest extends TestCase
 
         Point2D.Double testPoint2 = new Point2D.Double();
         testPoint2.setLocation( 10, -80 );
-        String name2 = "Paul";
+        String name2 = "Pauly";
+
+        Point2D.Double testPoint3 = new Point2D.Double();
+        testPoint3.setLocation( 100, -80 );
+        String name3 = "Dan";
 
         testTree.insert( testPoint, name );
 
         testTree.insert( testPoint2, name2 );
+
+        testTree.insert( testPoint3, name3 );
 
     }
     //

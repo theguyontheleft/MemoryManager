@@ -44,14 +44,14 @@ public class MemoryManager
         return ByteBuffer.allocate( 4 ).putInt( handleLocation ).array();
     }
 
-    public byte[] getObject( byte[] handle )
+    public byte[] getObject( byte[] handle, boolean isNode )
     {
         byte[] toReturn = null;
 
         int position = ByteBuffer.wrap( handle ).getInt();
 
         // return internal node
-        if ( array[position] == 0 )
+        if ( array[position] == 0 && isNode )
         {
             toReturn = new byte[9];
             for ( int i = 0; i < 9; i++, position++ )
@@ -60,7 +60,7 @@ public class MemoryManager
             }
         }
         // return leaf node
-        else if ( array[position] == 1 )
+        else if ( array[position] == 1 && isNode )
         {
             toReturn = new byte[5];
             for ( int i = 0; i < 5; i++, position++ )
@@ -78,7 +78,7 @@ public class MemoryManager
                 size[i] = array[position];
             }
 
-            int sizeOfMessage = ByteBuffer.wrap( size ).getInt();
+            int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
 
             toReturn = new byte[sizeOfMessage];
 
@@ -126,5 +126,16 @@ public class MemoryManager
                 array[handleLocation] = 0;
             }
         }
+    }
+
+    public void update( byte[] handle, byte[] dataToUpdate )
+    {
+        int location = ByteBuffer.wrap( handle ).getInt();
+
+        for ( int i = 0; i < dataToUpdate.length; i++, location++ )
+        {
+            array[location] = dataToUpdate[i];
+        }
+
     }
 }

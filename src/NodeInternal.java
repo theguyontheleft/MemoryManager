@@ -34,9 +34,9 @@ public class NodeInternal implements Node
      */
     public NodeInternal()
     {
-        handleLeft = new byte[9];
-        handleRight = new byte[9];
-        currentHandle = new byte[9];
+        handleLeft = new byte[4];
+        handleRight = new byte[4];
+        currentHandle = new byte[4];
         isLeaf = 0;
     }
 

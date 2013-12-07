@@ -96,6 +96,8 @@ public class Bintree<Key, E>
         watcherHandle = memoryManager.insert( newWatcher.serialize() ).clone();
 
         root = insertHelper( root, k, watcherHandle, tempTreeDepth, insertMap );
+        memoryManager.update( root.getCurrentHandle(), root.serialize() );
+
         nodeCount++;
     }
 
@@ -116,10 +118,10 @@ public class Bintree<Key, E>
             int level, InsertMapping map )
     {
         // Base Case - leaf node with no value
-        if ( node.isLeaf() && ((NodeLeaf) node).eqaulTo( flyWeightHandle ) )
+        if ( node.isLeaf() && ((NodeLeaf) node).equalTo( flyWeightHandle ) )
         {
             // deletes old instance of the leaf node
-            memoryManager.delete( node.getCurrentHandle() );
+            // memoryManager.delete( node.getCurrentHandle() );
 
             // creates new leaf node with a handle to the newly created watcher
             NodeLeaf newLeaf = new NodeLeaf( watcherHandle );
@@ -140,9 +142,10 @@ public class Bintree<Key, E>
             return newLeaf;
         }
         // leaf node with value
-        else if ( node.isLeaf() && !((NodeLeaf) node).eqaulTo( flyWeightHandle ) )
+        else if ( node.isLeaf() && !((NodeLeaf) node).equalTo( flyWeightHandle ) )
         {
-            NodeInternal newInternal = new NodeInternal( flyWeightHandle );
+            NodeInternal newInternal =
+                    new NodeInternal( flyWeight.getCurrentHandle() );
 
             treeDepth++;
 
@@ -152,11 +155,15 @@ public class Bintree<Key, E>
             double tempLowYBound = map.getLowYBound();
 
             Watcher watcher =
-                    (Watcher) deSerialize( ((NodeLeaf) node).getElement() );
+                    (Watcher) deSerialize( ((NodeLeaf) node).getElement(),
+                            false );
+            // deletes old instance of the leaf node
 
             // inserts leaf node previously at this location
             insertHelper( newInternal, (Key) watcher.getWatcherPoint(),
-                    ((NodeLeaf) node).getCurrentHandle(), level, map );
+                    ((NodeLeaf) node).getElement(), level, map );
+
+            memoryManager.delete( node.getCurrentHandle() );
 
             map.setUpXBound( tempUpXBound );
             map.setUpYBound( tempUpYBound );
@@ -167,7 +174,10 @@ public class Bintree<Key, E>
             node = insertHelper( newInternal, k, watcherHandle, level, map );
 
             // TODO update internal node
-            memoryManager.insert( newInternal.serialize() );
+
+            byte[] internalCurrentlHandle =
+                    memoryManager.insert( newInternal.serialize() );
+            newInternal.setCurrentHandle( internalCurrentlHandle );
         }
 
         // divides on the x axis
@@ -183,16 +193,18 @@ public class Bintree<Key, E>
             {
                 map.setLowXBound( xWidth + map.getLowXBound() );
                 ((NodeInternal) node).setRight( insertHelper(
-                        (Node) deSerialize( ((NodeInternal) node).getRight() ),
-                        k, watcherHandle, level, map ).serialize() );
+                        (Node) deSerialize( ((NodeInternal) node).getRight(),
+                                true ), k, watcherHandle, level, map )
+                        .getCurrentHandle() );
             }
             // sets node to the left
             else
             {
                 map.setUpXBound( map.getUpXBound() - xWidth );
                 ((NodeInternal) node).setLeft( insertHelper(
-                        (Node) deSerialize( ((NodeInternal) node).getLeft() ),
-                        k, watcherHandle, level, map ).serialize() );
+                        (Node) deSerialize( ((NodeInternal) node).getLeft(),
+                                true ), k, watcherHandle, level, map )
+                        .getCurrentHandle() );
             }
         }
         // divides on the y axis
@@ -209,8 +221,9 @@ public class Bintree<Key, E>
                 map.setLowYBound( yHeight + map.getLowYBound() );
 
                 ((NodeInternal) node).setRight( insertHelper(
-                        (Node) deSerialize( ((NodeInternal) node).getRight() ),
-                        k, watcherHandle, level, map ).serialize() );
+                        (Node) deSerialize( ((NodeInternal) node).getRight(),
+                                true ), k, watcherHandle, level, map )
+                        .getCurrentHandle() );
             }
             // sets node to the left
             else
@@ -218,21 +231,27 @@ public class Bintree<Key, E>
                 map.setUpYBound( map.getUpYBound() - yHeight );
 
                 ((NodeInternal) node).setLeft( insertHelper(
-                        (Node) deSerialize( ((NodeInternal) node).getLeft() ),
-                        k, watcherHandle, level, map ).serialize() );
+                        (Node) deSerialize( ((NodeInternal) node).getLeft(),
+                                true ), k, watcherHandle, level, map )
+                        .getCurrentHandle() );
             }
         }
         return node;
     }
 
-    private Object deSerialize( byte[] handle )
+    private Object deSerialize( byte[] handle, boolean isNode )
     {
         Object toReturn = null;
 
-        byte[] newObject = memoryManager.getObject( handle ).clone();
+        byte[] newObject = memoryManager.getObject( handle, isNode ).clone();
 
+        // flyweight
+        if ( handle.equals( flyWeightHandle ) )
+        {
+            toReturn = flyWeight;
+        }
         // create internal node
-        if ( newObject[0] == 0 && newObject.length == 9 )
+        else if ( newObject[0] == 0 && isNode )
         {
             byte[] handleLeft = new byte[9];
             byte[] handleRight = new byte[9];
@@ -245,17 +264,17 @@ public class Bintree<Key, E>
 
             for ( int i = 5; i < 9; i++ )
             {
-                handleRight[i - 5] = newObject[i];
+                handleRight[i - 4] = newObject[i];
             }
 
             toReturn = new NodeInternal( handleLeft, handleRight, handle );
 
         }
         // creates leaf node
-        else if ( newObject[0] == 1 && newObject.length == 5 )
+        else if ( newObject[0] == 1 && isNode )
         {
             // creates a node from the information in the memory manager
-            byte[] watcherRecordHandle = new byte[5];
+            byte[] watcherRecordHandle = new byte[4];
             for ( int i = 1; i < 5; i++ )
             {
                 watcherRecordHandle[i - 1] = newObject[i];
@@ -301,14 +320,7 @@ public class Bintree<Key, E>
             toReturn = new Watcher( x, y, name );
 
         }
-
         return toReturn;
-    }
-
-    private Point2D.Double getPoint( byte[] hanlde )
-    {
-
-        return null;
     }
 
     // /**

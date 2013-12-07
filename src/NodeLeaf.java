@@ -43,19 +43,13 @@ public class NodeLeaf implements Node
     {
         isLeaf = 1;
 
-        watcherRecordHandle = e;
+        watcherRecordHandle = e.clone();
     }
 
     public NodeLeaf( byte[] e, byte[] myCurrentHandle )
     {
-        isLeaf = e[0];
-        watcherRecordHandle = new byte[4];
-
-        for ( int i = 1; i < e.length; i++ )
-        {
-            watcherRecordHandle[i - 1] = e[i];
-        }
-
+        isLeaf = 1;
+        watcherRecordHandle = e;
         currentHandle = myCurrentHandle;
     }
 
@@ -67,7 +61,7 @@ public class NodeLeaf implements Node
      */
     public void setElement( byte[] e )
     {
-        watcherRecordHandle = e;
+        watcherRecordHandle = e.clone();
     }
 
     /**
@@ -100,7 +94,7 @@ public class NodeLeaf implements Node
     @Override
     public void setCurrentHandle( byte[] currentHandle )
     {
-        this.currentHandle = currentHandle;
+        this.currentHandle = currentHandle.clone();
     }
 
     /**
@@ -127,9 +121,8 @@ public class NodeLeaf implements Node
 
         return toReturn;
     }
-    
 
-    public boolean eqaulTo( byte[] handle )
+    public boolean equalTo( byte[] handle )
     {
         for ( int i = 0; i < handle.length; i++ )
         {
