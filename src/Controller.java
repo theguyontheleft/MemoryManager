@@ -2,7 +2,6 @@ import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 /**
  * @author Jimmy Dagres
@@ -26,15 +25,10 @@ public class Controller
     private long size_;
 
     // Instance to the bufferPool
-    BufferPool bufPool_;
+    static BufferPool bufPool_;
 
     // Instance of the Memory Manager
     MemoryManager memoryManager_;
-
-    /**
-     * random access file to be sorted.
-     */
-    RandomAccessFile raf_;
 
     /**
      * Constructor method initializes the references to the structures used, and
@@ -42,13 +36,13 @@ public class Controller
      */
     public Controller()
     {
-        // Initialize the data structures
-        // subscribersBintree_ = new Bintree<Point2D.Double, String>();
+        // Initialize the data structures 
+        // subscribersBintree_ = new Bintree<Point2D.Double, String>(); TODO
 
         // initialize memory variables
         String commandFileName_ = null;
         Integer numberBuffs = null;
-        recSize_ = 4; // TODO: what is this?
+        recSize_ = 4; // TODO: what is this? This should be varying
         size_ = 0;
     }
 
