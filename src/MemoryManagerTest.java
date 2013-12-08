@@ -57,16 +57,16 @@ public class MemoryManagerTest extends TestCase
     }
     
     /**
-     * Tests the MemoryBuffer object used in the freelist
+     * Tests the MemoryBlock object used in the freelist
      */
-    public void testMemoryBuffer()
+    public void testMemoryBlock()
     {
-        MemoryBuffer memoryBuffer_ = new MemoryBuffer();
+        MemoryBlock memoryBlock_ = new MemoryBlock(0,0);
         
-        memoryBuffer_.setLength( 1337 );
-        assertEquals(memoryBuffer_.getLength(), 1337);
+        memoryBlock_.setLength( 1337 );
+        assertEquals(memoryBlock_.getLength(), 1337);
         
-        memoryBuffer_.setPosition( 1337 );
-        assertEquals(memoryBuffer_.getPosition(), 1337);
+        memoryBlock_.setPosition( 1337 );
+        assertEquals(memoryBlock_.getPosition(), 1337);
     }
 }

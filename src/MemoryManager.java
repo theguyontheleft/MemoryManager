@@ -9,8 +9,7 @@ import java.nio.ByteBuffer;
  */
 public class MemoryManager
 {
-
-    private byte array[];
+    private byte array[]; // TODO: remove
     private int currentPos;
 
     // Static reference to the buffer pool
@@ -19,7 +18,7 @@ public class MemoryManager
     /**
      * Reference to the freeList
      */
-    AList<MemoryBuffer> freeList_;
+    AList<MemoryBlock> freeList_;
 
     /**
      * TODO: remove un parametized constructor
@@ -40,7 +39,9 @@ public class MemoryManager
         currentPos = 0;
         bufferPool_ = bufferPool;
 
-        freeList_ = new AList<MemoryBuffer>( 1000 );
+        array = new byte[1000];
+
+        freeList_ = new AList<MemoryBlock>( 0 );
     }
 
     /**
@@ -58,23 +59,42 @@ public class MemoryManager
                     ByteBuffer.allocate( 2 ).putShort( (short) newData.length )
                             .array();
 
+            // Look through the freelist to find free space in the bufferpool
+            int freeListPosition = findFreeSpace( newData );
+            if ( -1 == freeListPosition )
+            {
+                // TODO: grow the size of the memoryManager bufferPool to meet
+                // the requirements?
+
+            }
+            else
+            {
+                // There was a spot in the free list TODO
+
+                // Remove the newly used memory block from the freeList_
+                removeNewlyUsedSpace( freeListPosition );
+
+                // return
+            }
+
             for ( int i = 0; i < messageLength.length; i++, currentPos++ )
             {
-                // freeList_[currentPos] = messageLength[i];
-                array[currentPos] = messageLength[i]; // OLD TODO
+                array[currentPos] = messageLength[i];
             }
         }
 
         for ( int i = 0; i < newData.length; i++, currentPos++ )
         {
-            // freeList_[currentPos] = newData[i];
-            array[currentPos] = newData[i]; // OLD TODO
+            array[currentPos] = newData[i];
         }
 
         return ByteBuffer.allocate( 4 ).putInt( handleLocation ).array();
     }
 
     /**
+     * Message request, used by the bintree to get the content of the message
+     * contained by the handle
+     * 
      * @param handle
      * @param isNode
      * @return the byte of the object desired
@@ -91,7 +111,10 @@ public class MemoryManager
             toReturn = new byte[9];
             for ( int i = 0; i < 9; i++, position++ )
             {
-                toReturn[i] = array[position]; // OLD TODO
+                // TODO: ask the buffer for the data at this position
+                // bufferPool_.getbytes( handle, handle.length, position );
+
+                toReturn[i] = array[position];
             }
         }
         // return leaf node
@@ -100,7 +123,7 @@ public class MemoryManager
             toReturn = new byte[5];
             for ( int i = 0; i < 5; i++, position++ )
             {
-                toReturn[i] = array[position]; // OLD TODO
+                toReturn[i] = array[position];
             }
         }
         // return watcher
@@ -110,7 +133,7 @@ public class MemoryManager
 
             for ( int i = 0; i < 2; i++, position++ )
             {
-                size[i] = array[position]; // OLD TODO
+                size[i] = array[position];
             }
 
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
@@ -119,7 +142,7 @@ public class MemoryManager
 
             for ( int i = 0; i < sizeOfMessage; i++, position++ )
             {
-                toReturn[i] = array[position]; // OLD TODO
+                toReturn[i] = array[position];
             }
         }
 
@@ -127,6 +150,8 @@ public class MemoryManager
     }
 
     /**
+     * Delete's the memory with the passed handle
+     * 
      * @param handle
      * @param isLeaf
      */
@@ -139,7 +164,7 @@ public class MemoryManager
         {
             for ( int i = 0; i < 9; i++, handleLocation++ )
             {
-                array[handleLocation] = 0; // OLD TODO
+                array[handleLocation] = 0;
             }
         }
         // delete leaf node
@@ -147,7 +172,7 @@ public class MemoryManager
         {
             for ( int i = 0; i < 5; i++, handleLocation++ )
             {
-                array[handleLocation] = 0; // OLD TODO
+                array[handleLocation] = 0;
             }
         }
         // delete a watcher
@@ -157,15 +182,44 @@ public class MemoryManager
             for ( int i = 0; i < 2; i++, handleLocation++ )
             {
                 size[i] = array[handleLocation]; // OLD TODO
-                array[handleLocation] = 0; // OLD 
+                array[handleLocation] = 0;
             }
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
 
             for ( int i = 0; i < sizeOfMessage; i++, handleLocation++ )
             {
-                array[handleLocation] = 0; // OLD 
+                array[handleLocation] = 0;
             }
         }
+
+        // Update the freedSpace
+        addNewlyFreedSpace( handle, handleLocation );
+    }
+
+    /**
+     * This method adds the newly deleted/freed space to the free arraylist
+     * 
+     * @param handle
+     * @param handleLocation
+     */
+    private void addNewlyFreedSpace( byte[] handle, int handleLocation )
+    {
+        MemoryBlock memoryBlock_ =
+                new MemoryBlock( handleLocation, handle.length );
+
+        freeList_.insert( memoryBlock_ );
+    }
+
+    /**
+     * When a memoryBlock in the freeList meets the requirements for a new
+     * insert request this function is called to remove that memoryBlock from
+     * the freeList.
+     * 
+     * @param positionToRemove
+     */
+    private void removeNewlyUsedSpace( int positionToRemove )
+    {
+        // TODO:
     }
 
     /**
@@ -181,17 +235,47 @@ public class MemoryManager
             array[location] = dataToUpdate[i];
         }
     }
-    
+
     /**
-     * The following functions merges two sections of the freelist array
-     * if they are adjacent
+     * The following functions merges two sections of the freelist arraylist if
+     * they are adjacent
      * 
      * @param firstPosition
      * @param secondPosition
      * @return true if merged and false if not
      */
-    public boolean merge(int firstPosition, int secondPosition)
+    public boolean merge( int firstPosition, int secondPosition )
     {
+        // Make sure the position in inside the array
+        if ( freeList_.length() > firstPosition
+                || freeList_.length() > secondPosition )
+        {
+            // TODO: 
+            
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Finds free space inside the free list using a circular fit.
+     * 
+     * @param byteToStore
+     * @return the position of the compatible freeLst inside the freeList_ array
+     */
+    public int findFreeSpace( byte[] byteToStore )
+    {
+        // Iterate through the freelist arraylist looking for space equal or
+        // greater than the length of the byteToStore
+        for ( int j = 0; j < freeList_.length(); j++ )
+        {
+            if ( freeList_.itemUsed( j ).getLength() >= byteToStore.length )
+            {
+                return j;
+            }
+        }
+
+        return -1;
     }
 }

@@ -6,10 +6,23 @@
  * 
  *          This class is used by the freelist
  */
-public class MemoryBuffer
+public class MemoryBlock
 {
     int position_;
     int length_;
+
+    /**
+     * Initializes the memory block of the free list with the necessary
+     * information
+     * 
+     * @param position
+     * @param length
+     */
+    public MemoryBlock( int position, int length )
+    {
+        position_ = position;
+        length_ = length;
+    }
 
     /**
      * @return the position
