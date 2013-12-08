@@ -56,5 +56,4 @@ public class BufferTest extends TestCase
 
         assertEquals( test1, buff.getBlock() );
     }
-
 }

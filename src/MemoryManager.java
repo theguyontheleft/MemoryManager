@@ -12,8 +12,8 @@ public class MemoryManager
 
     private byte array[];
     private int currentPos;
-    
-    // Static reference to the buffer pool TODO: add to remote
+
+    // Static reference to the buffer pool
     private static BufferPool bufferPool_;
 
     /**
@@ -21,28 +21,32 @@ public class MemoryManager
      */
     AList<MemoryBuffer> freeList_;
 
+    /**
+     * TODO: remove un parametized constructor
+     */
     public MemoryManager()
     {
         array = new byte[1000];
         currentPos = 0;
-
-        freeList_ = new AList<>( 0 );
     }
 
     /**
      * @param bufferPool
      * 
-     *            The parametized constructor receives a bufferPool TODO add to
-     *            matt's version.
+     *            The parametized constructor receives a bufferPool
      */
     public MemoryManager( BufferPool bufferPool )
     {
         currentPos = 0;
         bufferPool_ = bufferPool;
 
-        freeList_ = new AList<MemoryBuffer>( 0 );
+        freeList_ = new AList<MemoryBuffer>( 1000 );
     }
 
+    /**
+     * @param newData
+     * @return the byte array inserted
+     */
     public byte[] insert( byte[] newData )
     {
         Integer handleLocation = currentPos;
@@ -56,18 +60,25 @@ public class MemoryManager
 
             for ( int i = 0; i < messageLength.length; i++, currentPos++ )
             {
-                array[currentPos] = messageLength[i];
+                // freeList_[currentPos] = messageLength[i];
+                array[currentPos] = messageLength[i]; // OLD TODO
             }
         }
 
         for ( int i = 0; i < newData.length; i++, currentPos++ )
         {
-            array[currentPos] = newData[i];
+            // freeList_[currentPos] = newData[i];
+            array[currentPos] = newData[i]; // OLD TODO
         }
 
         return ByteBuffer.allocate( 4 ).putInt( handleLocation ).array();
     }
 
+    /**
+     * @param handle
+     * @param isNode
+     * @return the byte of the object desired
+     */
     public byte[] getObject( byte[] handle, boolean isNode )
     {
         byte[] toReturn = null;
@@ -80,7 +91,7 @@ public class MemoryManager
             toReturn = new byte[9];
             for ( int i = 0; i < 9; i++, position++ )
             {
-                toReturn[i] = array[position];
+                toReturn[i] = array[position]; // OLD TODO
             }
         }
         // return leaf node
@@ -89,7 +100,7 @@ public class MemoryManager
             toReturn = new byte[5];
             for ( int i = 0; i < 5; i++, position++ )
             {
-                toReturn[i] = array[position];
+                toReturn[i] = array[position]; // OLD TODO
             }
         }
         // return watcher
@@ -99,7 +110,7 @@ public class MemoryManager
 
             for ( int i = 0; i < 2; i++, position++ )
             {
-                size[i] = array[position];
+                size[i] = array[position]; // OLD TODO
             }
 
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
@@ -108,13 +119,17 @@ public class MemoryManager
 
             for ( int i = 0; i < sizeOfMessage; i++, position++ )
             {
-                toReturn[i] = array[position];
+                toReturn[i] = array[position]; // OLD TODO
             }
         }
 
         return toReturn;
     }
 
+    /**
+     * @param handle
+     * @param isLeaf
+     */
     public void delete( byte[] handle, boolean isLeaf )
     {
         int handleLocation = ByteBuffer.wrap( handle ).getInt();
@@ -124,7 +139,7 @@ public class MemoryManager
         {
             for ( int i = 0; i < 9; i++, handleLocation++ )
             {
-                array[handleLocation] = 0;
+                array[handleLocation] = 0; // OLD TODO
             }
         }
         // delete leaf node
@@ -132,7 +147,7 @@ public class MemoryManager
         {
             for ( int i = 0; i < 5; i++, handleLocation++ )
             {
-                array[handleLocation] = 0;
+                array[handleLocation] = 0; // OLD TODO
             }
         }
         // delete a watcher
@@ -141,18 +156,22 @@ public class MemoryManager
             byte[] size = new byte[2];
             for ( int i = 0; i < 2; i++, handleLocation++ )
             {
-                size[i] = array[handleLocation];
-                array[handleLocation] = 0;
+                size[i] = array[handleLocation]; // OLD TODO
+                array[handleLocation] = 0; // OLD 
             }
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
 
             for ( int i = 0; i < sizeOfMessage; i++, handleLocation++ )
             {
-                array[handleLocation] = 0;
+                array[handleLocation] = 0; // OLD 
             }
         }
     }
 
+    /**
+     * @param handle
+     * @param dataToUpdate
+     */
     public void update( byte[] handle, byte[] dataToUpdate )
     {
         int location = ByteBuffer.wrap( handle ).getInt();
@@ -161,6 +180,18 @@ public class MemoryManager
         {
             array[location] = dataToUpdate[i];
         }
-
+    }
+    
+    /**
+     * The following functions merges two sections of the freelist array
+     * if they are adjacent
+     * 
+     * @param firstPosition
+     * @param secondPosition
+     * @return true if merged and false if not
+     */
+    public boolean merge(int firstPosition, int secondPosition)
+    {
+        return false;
     }
 }

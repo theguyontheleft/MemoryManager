@@ -46,6 +46,8 @@ public class MemoryManagerTest extends TestCase
 
             assertEquals( memoryPool.getFileLength(), 0 );
 
+            assertEquals( memoryPool.getDisk(), raf );
+
             memoryPool.closeFile();
         }
         catch ( Exception ex )

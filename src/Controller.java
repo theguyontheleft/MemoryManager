@@ -16,7 +16,7 @@ import java.io.IOException;
 public class Controller
 {
     // The bintree to store the coordinates of the watchers
-    // private Bintree<Point2D.Double, String> subscribersBintree_ = null;
+    private Bintree<Point2D.Double, String> subscribersBintree_ = null;
 
     private Integer recSize_;
     private Integer blockSize_;
@@ -37,7 +37,7 @@ public class Controller
     public Controller()
     {
         // Initialize the data structures
-        // subscribersBintree_ = new Bintree<Point2D.Double, String>(); TODO
+        subscribersBintree_ = new Bintree<Point2D.Double, String>();
 
         // initialize memory variables
         String commandFileName_ = null;
@@ -60,8 +60,8 @@ public class Controller
      */
     private void createMemoryManager()
     {
-        // TODO Create the memory manager passing it the BufferPool
-        // memoryManager_ = new MemoryManager(bufPool_);
+        // Create the memory manager passing it the BufferPool
+        memoryManager_ = new MemoryManager( bufPool_ );
     }
 
     /**
@@ -173,7 +173,7 @@ public class Controller
     /**
      * Prints a traversal for the bintree nodes. After that, it prints the block
      * IDs of the blocks currently contained in the bufferpool in order from
-     * most recently to least recently used. TODO
+     * most recently to least recently used.
      * 
      * @param s
      *            the possible debug command
@@ -222,7 +222,6 @@ public class Controller
                             + latitudeY
                             + " duplicates a watcher already in the bintree";
             System.out.println( outputString );
-
         }
     }
 
@@ -280,7 +279,7 @@ public class Controller
      *            The latitude coordinate
      * @param subscriberName
      *            name of subscriber
-     * @return
+     * @return whether or not the watcher was added to the bintree
      */
     private Boolean addWatcherToBinTree( String xLongitude, String yLatitude,
             String subscriberName )
@@ -290,13 +289,14 @@ public class Controller
         watcherCoordinate.setLocation( Double.parseDouble( xLongitude ),
                 Double.parseDouble( yLatitude ) );
 
-        // // Ensure that a duplicate coordinate Point2D isn't inserted
-        // if ( null == subscribersBintree_.findWrapper( watcherCoordinate ) )
-        // { TODO
-        // subscribersBintree_.insert( watcherCoordinate,
-        // subscriberName );
-        // return true;
-        // }
+        // Ensure that a duplicate coordinate Point2D isn't inserted
+        // TODO: this always fails
+        if ( subscribersBintree_.inTree( watcherCoordinate ) )
+        {
+            subscribersBintree_.insert( watcherCoordinate,
+                    subscriberName );
+            return true;
+        }
 
         return false;
     }
@@ -316,14 +316,13 @@ public class Controller
         Point2D.Double watcherCoordinate = new Point2D.Double();
         watcherCoordinate.setLocation( xLongitude, yLatitude );
 
-        // if ( subscribersBintree_.getFlyweight() != (TreeNode) TODO
-        // subscribersBintree_
+        // if ( subscribersBintree_.getFlyweight() != (Node) subscribersBintree_
         // .remove( watcherCoordinate )
-        // && subscribersBintree_.size() > 0 )
+        // && subscribersBintree_.treeDepth() > 0 )
         // {
-        // return true;
+        // return true; TODO
         // }
-        // else if ( 0 == subscribersBintree_.size() )
+        // else if ( 0 == subscribersBintree_.treeDepth() )
         // {
         // return true;
         // }
