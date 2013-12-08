@@ -123,9 +123,6 @@ public class Bintree<Key, E>
         // Base Case - leaf node with no value
         if ( node.isLeaf() && ((NodeLeaf) node).equalTo( flyWeightHandle ) )
         {
-            // deletes old instance of the leaf node
-            // memoryManager.delete( node.getCurrentHandle() );
-
             // creates new leaf node with a handle to the newly created watcher
             NodeLeaf newLeaf = new NodeLeaf( watcherHandle );
             // inserts to memory manager and returns a handle to itself
@@ -525,6 +522,11 @@ public class Bintree<Key, E>
      */
     public void rangeSearch( Key k, double radius )
     {
+        if ( radius == 0.00000 )
+        {
+            radius = 0.0001;
+        }
+
         // bounds of the entire map
         Rectangle2D.Double mapBounds = new Rectangle2D.Double();
         mapBounds.setRect( -180.0, -90.0, 360.0, 180.0 );
