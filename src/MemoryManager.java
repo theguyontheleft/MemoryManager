@@ -25,7 +25,7 @@ public class MemoryManager
      */
     public MemoryManager()
     {
-        array = new byte[1000];
+        array = new byte[10000];
         currentPos = 0;
     }
 

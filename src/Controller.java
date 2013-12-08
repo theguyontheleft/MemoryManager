@@ -206,6 +206,7 @@ public class Controller
         // Create a coordinate
         String longitudeX = s[1].trim();
         String latitudeY = s[2].trim();
+        String name = s[3].trim();
 
         if ( addWatcherToBinTree( s[1], s[2], s[3] ) )
         {
@@ -223,7 +224,7 @@ public class Controller
             // following output:
             // <coordinate> duplicates a watcher already in the bintree
             String outputString =
-                    longitudeX + " " + latitudeY
+                    name + " " + longitudeX + " " + latitudeY
                             + " duplicates a watcher already in the bintree";
             System.out.println( outputString );
         }

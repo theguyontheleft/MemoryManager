@@ -43,7 +43,7 @@ public class Bintree<Key, E>
     /**
      * instance of the memory manager
      */
-    private static MemoryManager memoryManager;
+    private MemoryManager memoryManager;
 
     private Node flyWeight;
 
@@ -173,6 +173,8 @@ public class Bintree<Key, E>
             byte[] internalCurrentlHandle =
                     memoryManager.insert( newInternal.serialize() );
             newInternal.setCurrentHandle( internalCurrentlHandle );
+
+            return newInternal; // possibly cast to Node
         }
 
         // divides on the x axis
@@ -201,6 +203,12 @@ public class Bintree<Key, E>
                                 true ), k, watcherHandle, level, map )
                         .getCurrentHandle() );
             }
+            if ( node.getCurrentHandle() != null )
+            {
+                memoryManager
+                        .update( node.getCurrentHandle(), node.serialize() );
+            }
+
         }
         // divides on the y axis
         else
@@ -219,6 +227,7 @@ public class Bintree<Key, E>
                         (Node) deSerialize( ((NodeInternal) node).getRight(),
                                 true ), k, watcherHandle, level, map )
                         .getCurrentHandle() );
+
             }
             // sets node to the left
             else
@@ -229,6 +238,11 @@ public class Bintree<Key, E>
                         (Node) deSerialize( ((NodeInternal) node).getLeft(),
                                 true ), k, watcherHandle, level, map )
                         .getCurrentHandle() );
+            }
+            if ( node.getCurrentHandle() != null )
+            {
+                memoryManager
+                        .update( node.getCurrentHandle(), node.serialize() );
             }
         }
         return node;
@@ -367,6 +381,13 @@ public class Bintree<Key, E>
                     && ((Watcher) (deSerialize( ((NodeLeaf) node).getElement(),
                             false ))).getWatcherPoint().equals( k ) )
             {
+
+                Watcher watcher =
+                        (Watcher) deSerialize( ((NodeLeaf) node).getElement(),
+                                false );
+
+                System.out.print( watcher.getWatcherName() + " " );
+
                 // deletes the watcher
                 memoryManager.delete( ((NodeLeaf) node).getElement(), false );
                 // deletes the node
@@ -401,6 +422,12 @@ public class Bintree<Key, E>
                         (Node) deSerialize( ((NodeInternal) node).getLeft(),
                                 true ), k, level, map ).getCurrentHandle() );
             }
+
+            if ( node.getCurrentHandle() != null )
+            {
+                memoryManager
+                        .update( node.getCurrentHandle(), node.serialize() );
+            }
         }
         // divides on the y axis
         else
@@ -427,6 +454,12 @@ public class Bintree<Key, E>
                 ((NodeInternal) node).setLeft( removeHelper(
                         (Node) deSerialize( ((NodeInternal) node).getLeft(),
                                 true ), k, level, map ).getCurrentHandle() );
+            }
+
+            if ( node.getCurrentHandle() != null )
+            {
+                memoryManager
+                        .update( node.getCurrentHandle(), node.serialize() );
             }
         }
 
