@@ -12,11 +12,35 @@ public class MemoryManager
 
     private byte array[];
     private int currentPos;
+    
+    // Static reference to the buffer pool TODO: add to remote
+    private static BufferPool bufferPool_;
+
+    /**
+     * Reference to the freeList
+     */
+    AList<MemoryBuffer> freeList_;
 
     public MemoryManager()
     {
         array = new byte[1000];
         currentPos = 0;
+
+        freeList_ = new AList<>( 0 );
+    }
+
+    /**
+     * @param bufferPool
+     * 
+     *            The parametized constructor receives a bufferPool TODO add to
+     *            matt's version.
+     */
+    public MemoryManager( BufferPool bufferPool )
+    {
+        currentPos = 0;
+        bufferPool_ = bufferPool;
+
+        freeList_ = new AList<MemoryBuffer>( 0 );
     }
 
     public byte[] insert( byte[] newData )
