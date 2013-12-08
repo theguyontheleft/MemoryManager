@@ -51,8 +51,7 @@ public class Controller
      */
     void createBufferPool()
     {
-        bufPool_ =
-                new BufferPool( this.numberBuffs_, this.blockSize_ );
+        bufPool_ = new BufferPool( this.numberBuffs_, this.blockSize_ );
     }
 
     /**
@@ -165,8 +164,16 @@ public class Controller
      */
     private void searchHelper( String[] s )
     {
-        int numberOfWatchersVisited = 0;
-        // TODO
+
+        Double longitudeX = Double.parseDouble( s[1].trim() );
+        Double latitudeY = Double.parseDouble( s[2].trim() );
+        Double radius = Double.parseDouble( s[3].trim() );
+
+        System.out.println( "Search " + longitudeX + " " + latitudeY + " "
+                + radius + " returned the following watchers:" );
+
+        subscribersBintree_.rangeSearch( new Point2D.Double( longitudeX,
+                latitudeY ), radius );
 
     }
 
@@ -183,7 +190,7 @@ public class Controller
         // Check to ensure the arguments are in the form: debug
         if ( s.contains( "debug" ) )
         {
-            // subscribersBintree_.printWrapper(); // TODO Uncomment
+            subscribersBintree_.print();
         }
     }
 
@@ -205,8 +212,7 @@ public class Controller
             // If it was added successfully then display the output:
             // <Watcher name> <x> <y> is added to the bintree
             String outputString2 =
-                    s[3] + " " + longitudeX
-                            + " " + latitudeY
+                    s[3] + " " + longitudeX + " " + latitudeY
                             + " is added to the bintree";
             System.out.println( outputString2 );
         }
@@ -217,9 +223,7 @@ public class Controller
             // following output:
             // <coordinate> duplicates a watcher already in the bintree
             String outputString =
-                    longitudeX
-                            + " "
-                            + latitudeY
+                    longitudeX + " " + latitudeY
                             + " duplicates a watcher already in the bintree";
             System.out.println( outputString );
         }
@@ -248,8 +252,7 @@ public class Controller
                 // Displays the expected format:
                 // <Watcher name> <x> <y> is removed from the bintree
                 String removedFromBinTreeOutputString =
-                        subscriberToRemove + " " + longitudeX
-                                + " " + latitudeY
+                        subscriberToRemove + " " + longitudeX + " " + latitudeY
                                 + " is removed from the bintree";
                 System.out.println( removedFromBinTreeOutputString );
 
@@ -290,11 +293,9 @@ public class Controller
                 Double.parseDouble( yLatitude ) );
 
         // Ensure that a duplicate coordinate Point2D isn't inserted
-        // TODO: this always fails
-        if ( subscribersBintree_.inTree( watcherCoordinate ) )
+        if ( !subscribersBintree_.inTree( watcherCoordinate ) )
         {
-            subscribersBintree_.insert( watcherCoordinate,
-                    subscriberName );
+            subscribersBintree_.insert( watcherCoordinate, subscriberName );
             return true;
         }
 
@@ -316,17 +317,14 @@ public class Controller
         Point2D.Double watcherCoordinate = new Point2D.Double();
         watcherCoordinate.setLocation( xLongitude, yLatitude );
 
-        // if ( subscribersBintree_.getFlyweight() != (Node) subscribersBintree_
-        // .remove( watcherCoordinate )
-        // && subscribersBintree_.treeDepth() > 0 )
-        // {
-        // return true; TODO
-        // }
-        // else if ( 0 == subscribersBintree_.treeDepth() )
-        // {
-        // return true;
-        // }
-
-        return false;
+        if ( subscribersBintree_.inTree( watcherCoordinate ) )
+        {
+            subscribersBintree_.remove( watcherCoordinate );
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
