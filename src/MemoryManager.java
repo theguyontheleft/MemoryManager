@@ -72,7 +72,7 @@ public class MemoryManager
                 // There was a spot in the free list TODO
 
                 // Remove the newly used memory block from the freeList_
-                removeNewlyUsedSpace( freeListPosition );
+                // removeNewlyUsedSpace( freeListPosition );
 
                 // return
             }
@@ -192,8 +192,8 @@ public class MemoryManager
             }
         }
 
-        // Update the freedSpace
-        addNewlyFreedSpace( handle, handleLocation );
+        // Update the freedSpace TODO
+        // addNewlyFreedSpace( handle, handleLocation );
     }
 
     /**
@@ -250,8 +250,8 @@ public class MemoryManager
         if ( freeList_.length() > firstPosition
                 || freeList_.length() > secondPosition )
         {
-            // TODO: 
-            
+            // TODO:
+
             return true;
         }
 
@@ -268,13 +268,13 @@ public class MemoryManager
     {
         // Iterate through the freelist arraylist looking for space equal or
         // greater than the length of the byteToStore
-        for ( int j = 0; j < freeList_.length(); j++ )
-        {
-            if ( freeList_.itemUsed( j ).getLength() >= byteToStore.length )
-            {
-                return j;
-            }
-        }
+        // for ( int j = 0; j < freeList_.length(); j++ )
+        // { TODO
+        // if ( freeList_.itemUsed( j ).getLength() >= byteToStore.length )
+        // {
+        // return j;
+        // }
+        // }
 
         return -1;
     }
