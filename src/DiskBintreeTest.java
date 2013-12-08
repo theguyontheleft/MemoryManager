@@ -1,3 +1,5 @@
+import java.awt.geom.Point2D;
+
 import junit.framework.TestCase;
 
 /**
@@ -36,5 +38,21 @@ public class DiskBintreeTest extends TestCase
 
         DiskBintree.main( stringToPass );
         assertEquals( stringToPass[0], "watcherP4.txt" );
+    }
+
+    /**
+     * Tests the watcher class
+     */
+    public void testWatcher()
+    {
+        Watcher watcher = new Watcher( 13.0, 3.7, "Jimmy" );
+
+        watcher.setWatcherName( "James Dagres" );
+        assertEquals( watcher.getWatcherName(), "James Dagres" );
+
+        Point2D.Double testPoint = new Point2D.Double();
+        testPoint.setLocation( 13.0, 13.7 );
+        watcher.setWatcherPoint( testPoint );
+        assertEquals( watcher.getWatcherPoint(), testPoint );
     }
 }
