@@ -82,6 +82,7 @@ public class Bintree<Key, E>
      *            nodes key value
      * @param val
      *            nodes value
+     * @return 
      */
     public E insert( Key k, E val )
     {
