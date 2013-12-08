@@ -82,7 +82,7 @@ public class Bintree<Key, E>
      *            nodes key value
      * @param val
      *            nodes value
-     * @return 
+     * @return
      */
     public E insert( Key k, E val )
     {
@@ -250,7 +250,7 @@ public class Bintree<Key, E>
      * @return true if it exists otherwise false
      * 
      */
-    public boolean contains( Key k )
+    public boolean inTree( Key k )
     {
         boolean toReturn = false;
         InsertMapping findMap = new InsertMapping();
@@ -599,7 +599,9 @@ public class Bintree<Key, E>
             if ( distance < radius )
             {
 
-                System.out.println( ((NodeLeaf) node).getElement()
+                System.out.println( ((Watcher) deSerialize(
+                        ((NodeLeaf) node).getElement(), false ))
+                        .getWatcherName()
                         + " "
                         + ((Watcher) deSerialize(
                                 ((NodeLeaf) node).getElement(), false ))
