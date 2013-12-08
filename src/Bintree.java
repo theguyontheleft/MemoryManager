@@ -131,9 +131,6 @@ public class Bintree<Key, E>
             // sets its current handle
             newLeaf.setCurrentHandle( newLeafHandle );
 
-            // TODO need to write this updated handle to memory manager at some
-            // point
-
             if ( level > treeDepth )
             {
                 treeDepth = level;
@@ -157,12 +154,12 @@ public class Bintree<Key, E>
             Watcher watcher =
                     (Watcher) deSerialize( ((NodeLeaf) node).getElement(),
                             false );
-            // deletes old instance of the leaf node
 
             // inserts leaf node previously at this location
             insertHelper( newInternal, (Key) watcher.getWatcherPoint(),
                     ((NodeLeaf) node).getElement(), level, map );
 
+            // deletes old instance of the leaf node
             memoryManager.delete( node.getCurrentHandle(), true );
 
             map.setUpXBound( tempUpXBound );
@@ -172,8 +169,6 @@ public class Bintree<Key, E>
 
             // inserts new data into a leaf node
             node = insertHelper( newInternal, k, watcherHandle, level, map );
-
-            // TODO update internal node
 
             byte[] internalCurrentlHandle =
                     memoryManager.insert( newInternal.serialize() );
@@ -263,7 +258,7 @@ public class Bintree<Key, E>
      * @param node
      *            root
      * @param k
-     *            key to searh for
+     *            key to search for
      * @param level
      *            tree depth
      * @param map
@@ -377,8 +372,6 @@ public class Bintree<Key, E>
                 // deletes the node
                 memoryManager.delete( ((NodeLeaf) node).getCurrentHandle(),
                         true );
-                // inserts the flyweight
-                // memoryManager.insert( flyWeight.serialize() );
 
                 return flyWeight;
             }
@@ -764,60 +757,64 @@ public class Bintree<Key, E>
         return toReturn;
     }
 
-    //
-    // /**
-    // * prints preorder traversal of tree to the command line
-    // */
-    // public void print()
-    // {
-    // printHelper( root );
-    // }
-    //
-    // /**
-    // * recursive call of print
-    // *
-    // * @param node
-    // * root
-    // */
-    // private void printHelper( Node node )
-    // {
-    // printVisit( node );
-    //
-    // if ( !node.isLeaf() )
-    // {
-    // printHelper( ((NodeInternal) node).getLeft() );
-    // printHelper( ((NodeInternal) node).getRight() );
-    // }
-    // }
-    //
-    // /**
-    // * prints out type of node
-    // *
-    // * @param node
-    // * current node
-    // */
-    // private void printVisit( Node node )
-    // {
-    // // empty leaf
-    // if ( node.isLeaf() && ((NodeLeaf) node).getElement() == null )
-    // {
-    // System.out.println( "E" );
-    // }
-    // // leaf with value
-    // else if ( node.isLeaf() && ((NodeLeaf) node).getElement() != null )
-    // {
-    // System.out.println( ((NodeLeaf) node).getElement() + " "
-    // + ((Point2D.Double) ((NodeLeaf) node).getKey()).getX()
-    // + " "
-    // + ((Point2D.Double) ((NodeLeaf) node).getKey()).getY() );
-    // }
-    // // internal node
-    // else
-    // {
-    // System.out.println( "I" );
-    // }
-    //
-    // }
+    /**
+     * prints preorder traversal of tree to the command line
+     */
+    public void print()
+    {
+        printHelper( root );
+    }
+
+    /**
+     * recursive call of print
+     * 
+     * @param node
+     *            root
+     */
+    private void printHelper( Node node )
+    {
+        printVisit( node );
+
+        if ( !node.isLeaf() )
+        {
+            printHelper( (Node) deSerialize( ((NodeInternal) node).getLeft(),
+                    true ) );
+            printHelper( (Node) deSerialize( ((NodeInternal) node).getRight(),
+                    true ) );
+        }
+    }
+
+    /**
+     * prints out type of node
+     * 
+     * @param node
+     *            current node
+     */
+    private void printVisit( Node node )
+    {
+        // empty leaf
+        if ( node.isLeaf() && ((NodeLeaf) node).equalTo( flyWeightHandle ) )
+        {
+            System.out.println( "E" );
+        }
+        // leaf with value
+        else if ( node.isLeaf() && !((NodeLeaf) node).equalTo( flyWeightHandle ) )
+        {
+            Watcher watcher =
+                    (Watcher) deSerialize( ((NodeLeaf) node).getElement(),
+                            false );
+
+            System.out.println( watcher.getWatcherName() + " "
+                    + watcher.getWatcherPoint().getX() + " "
+                    + watcher.getWatcherPoint().getY() );
+        }
+        // internal node
+        else
+        {
+            System.out.println( "I" );
+        }
+
+    }
     //
     // /**
     // * returns depth of the Bintree
