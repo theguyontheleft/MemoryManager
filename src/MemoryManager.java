@@ -42,7 +42,7 @@ public class MemoryManager
 
         // array = new byte[1000];
 
-        freeList_ = new AList<MemoryBlock>( 0 );
+        freeList_ = new AList<MemoryBlock>( 0, bufferPool_.getBlockSize() );
     }
 
     /**
@@ -78,11 +78,8 @@ public class MemoryManager
         {
             handleLocation = currentPos;
             bufferPool_.insert( newData, newData.length, currentPos );
-            // handleLocation = currentPos;
-            // for ( int i = 0; i < newData.length; i++, currentPos++ )
-            // {
-            // array[currentPos] = newData[i];
-            // }
+
+            currentPos += newData.length;
         }
         else
         {
@@ -95,14 +92,8 @@ public class MemoryManager
             handleLocation = position;
             bufferPool_.insert( newData, newData.length, position );
 
-            // handleLocation = position;
-            // for ( int i = 0; i < newData.length; i++, position++ )
-            // {
-            // // bufferPool_.o TODO
-            // array[position] = newData[i];
-            // }
+            currentPos += newData.length;
 
-            // Remove the newly used memory block from the freeList_
             removeNewlyUsedSpace( freeListPosition, newData.length );
         }
 
@@ -126,6 +117,7 @@ public class MemoryManager
         if ( !isNode )
         {
             byte[] size = new byte[2];
+
             bufferPool_.getbytes( size, size.length, position );
 
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
