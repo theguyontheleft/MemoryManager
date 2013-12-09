@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  */
 public class MemoryManager
 {
-    private byte array[]; // TODO: remove
+    // private byte array[]; // TODO: remove
     private int currentPos;
 
     // Static reference to the buffer pool
@@ -20,15 +20,15 @@ public class MemoryManager
      */
     AList<MemoryBlock> freeList_;
 
-    /**
-     * TODO: remove un parametized constructor
-     */
-    public MemoryManager()
-    {
-        array = new byte[10000];
-        currentPos = 0;
-        freeList_ = new AList<MemoryBlock>( 0 );
-    }
+    // /**
+    // * TODO: remove un parametized constructor
+    // */
+    // public MemoryManager()
+    // {
+    // array = new byte[10000];
+    // currentPos = 0;
+    // freeList_ = new AList<MemoryBlock>( 0 );
+    // }
 
     /**
      * @param bufferPool
@@ -40,7 +40,7 @@ public class MemoryManager
         currentPos = 0;
         bufferPool_ = bufferPool;
 
-        array = new byte[1000];
+        // array = new byte[1000];
 
         freeList_ = new AList<MemoryBlock>( 0 );
     }
@@ -77,10 +77,12 @@ public class MemoryManager
         if ( -1 == freeListPosition )
         {
             handleLocation = currentPos;
-            for ( int i = 0; i < newData.length; i++, currentPos++ )
-            {
-                array[currentPos] = newData[i];
-            }
+            bufferPool_.insert( newData, newData.length, currentPos );
+            // handleLocation = currentPos;
+            // for ( int i = 0; i < newData.length; i++, currentPos++ )
+            // {
+            // array[currentPos] = newData[i];
+            // }
         }
         else
         {
@@ -89,12 +91,16 @@ public class MemoryManager
 
             MemoryBlock freeMemoryBlock = freeList_.getValue();
             int position = freeMemoryBlock.getStartPosition();
+
             handleLocation = position;
-            for ( int i = 0; i < newData.length; i++, position++ )
-            {
-//                bufferPool_.o TODO
-                array[position] = newData[i];
-            }
+            bufferPool_.insert( newData, newData.length, position );
+
+            // handleLocation = position;
+            // for ( int i = 0; i < newData.length; i++, position++ )
+            // {
+            // // bufferPool_.o TODO
+            // array[position] = newData[i];
+            // }
 
             // Remove the newly used memory block from the freeList_
             removeNewlyUsedSpace( freeListPosition, newData.length );
@@ -117,44 +123,34 @@ public class MemoryManager
 
         int position = ByteBuffer.wrap( handle ).getInt();
 
-        // return internal node
-        if ( array[position] == 0 && isNode )
-        {
-            toReturn = new byte[9];
-            for ( int i = 0; i < 9; i++, position++ )
-            {
-                // TODO: ask the buffer for the data at this position
-                // bufferPool_.getbytes( handle, handle.length, position );
-
-                toReturn[i] = array[position];
-            }
-        }
-        // return leaf node
-        else if ( array[position] == 1 && isNode )
-        {
-            toReturn = new byte[5];
-            for ( int i = 0; i < 5; i++, position++ )
-            {
-                toReturn[i] = array[position];
-            }
-        }
-        // return watcher
-        else
+        if ( !isNode )
         {
             byte[] size = new byte[2];
-
-            for ( int i = 0; i < 2; i++, position++ )
-            {
-                size[i] = array[position];
-            }
+            bufferPool_.getbytes( size, size.length, position );
 
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
 
             toReturn = new byte[sizeOfMessage];
+            bufferPool_.getbytes( toReturn, sizeOfMessage, position + 2 );
+        }
+        else
+        {
+            byte[] nodeType = new byte[1];
 
-            for ( int i = 0; i < sizeOfMessage; i++, position++ )
+            bufferPool_.getbytes( nodeType, 1, position );
+
+            if ( nodeType[0] == 0 )
             {
-                toReturn[i] = array[position];
+                toReturn = new byte[9];
+
+                bufferPool_.getbytes( toReturn, toReturn.length, position );
+            }
+            // return leaf node
+            else if ( nodeType[0] == 1 )
+            {
+                toReturn = new byte[5];
+
+                bufferPool_.getbytes( toReturn, toReturn.length, position );
             }
         }
 
@@ -165,55 +161,47 @@ public class MemoryManager
      * Delete's the memory with the passed handle
      * 
      * @param handle
-     * @param isLeaf
+     * @param isNode
      */
-    public void delete( byte[] handle, boolean isLeaf )
+    public void delete( byte[] handle, boolean isNode )
     {
-        int handleLocation = ByteBuffer.wrap( handle ).getInt();
+        // initial handle position
+        int position = ByteBuffer.wrap( handle ).getInt();
 
         // space freed in memory
         int freedSpace = 0;
-        // initial handle position
-        int initialHandleLocation = handleLocation;
 
-        // delete internal node
-        if ( array[handleLocation] == 0 && isLeaf )
+        if ( !isNode )
         {
-            for ( int i = 0; i < 9; i++, handleLocation++ )
-            {
-                array[handleLocation] = 0;
-            }
-            freedSpace = 9;
-        }
-        // delete leaf node
-        else if ( array[handleLocation] == 1 && isLeaf )
-        {
-            for ( int i = 0; i < 5; i++, handleLocation++ )
-            {
-                array[handleLocation] = 0;
-            }
-            freedSpace = 5;
-        }
-        // delete a watcher
-        else
-        {
+            // delete a watcher
             byte[] size = new byte[2];
-            for ( int i = 0; i < 2; i++, handleLocation++ )
-            {
-                size[i] = array[handleLocation]; // OLD TODO
-                array[handleLocation] = 0;
-            }
+            bufferPool_.getbytes( size, size.length, position );
+
             int sizeOfMessage = ByteBuffer.wrap( size ).getShort();
 
-            for ( int i = 0; i < sizeOfMessage; i++, handleLocation++ )
-            {
-                array[handleLocation] = 0;
-            }
             freedSpace = sizeOfMessage + 2;
+
+        }
+        else
+        {
+
+            byte[] nodeType = new byte[1];
+
+            bufferPool_.getbytes( nodeType, 1, position );
+
+            if ( nodeType[0] == 0 )
+            {
+                freedSpace = 9;
+            }
+            // return leaf node
+            else if ( nodeType[0] == 1 )
+            {
+                freedSpace = 5;
+            }
         }
 
         // Update the freedSpace
-        addNewlyFreedSpace( freedSpace, initialHandleLocation );
+        addNewlyFreedSpace( freedSpace, position );
     }
 
     /**
@@ -264,17 +252,17 @@ public class MemoryManager
     }
 
     /**
+     * 
+     * Updates internal nodes handles while traversing up and down the tree
+     * 
      * @param handle
      * @param dataToUpdate
      */
     public void update( byte[] handle, byte[] dataToUpdate )
     {
-        int location = ByteBuffer.wrap( handle ).getInt();
+        int position = ByteBuffer.wrap( handle ).getInt();
 
-        for ( int i = 0; i < dataToUpdate.length; i++, location++ )
-        {
-            array[location] = dataToUpdate[i];
-        }
+        bufferPool_.insert( dataToUpdate, dataToUpdate.length, position );
     }
 
     /**
@@ -289,8 +277,7 @@ public class MemoryManager
         freeList_.moveToStart();
 
         int startCompare = freeList_.getValue().getStartPosition();
-        int endCompare =
-                freeList_.getValue().getEndPosition();
+        int endCompare = freeList_.getValue().getEndPosition();
 
         for ( int i = 1; i < freeList_.length(); i++ )
         {

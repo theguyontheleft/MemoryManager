@@ -13,7 +13,9 @@ import junit.framework.TestCase;
  */
 public class MemoryManagerTest extends TestCase
 {
+    BufferPool bufPool_;
     MemoryManager memoryManager_;
+
     byte[] testByteArray8_;
     byte[] testByteArray4_;
     byte[] testByteArray2_;
@@ -23,7 +25,8 @@ public class MemoryManagerTest extends TestCase
      */
     public void setUp()
     {
-        memoryManager_ = new MemoryManager();
+        bufPool_ = new BufferPool( 10, 10 );
+        memoryManager_ = new MemoryManager( bufPool_ );
 
         testByteArray8_ = new byte[8];
         for ( int j = 0; j < 8; j++ )
@@ -65,7 +68,8 @@ public class MemoryManagerTest extends TestCase
      */
     public void testMerge()
     {
-        memoryManager_ = new MemoryManager();
+        bufPool_ = new BufferPool( 10, 10 );
+        memoryManager_ = new MemoryManager( bufPool_ );
 
         byte[] leafNode1 = { (byte) 1, (byte) 0, (byte) 0, (byte) 0, (byte) 0 };
 
