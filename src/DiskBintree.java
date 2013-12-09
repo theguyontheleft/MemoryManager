@@ -19,9 +19,9 @@
 // letter of this restriction.
 
 /**
- * @author James Dagres
- * 
- * @author Matt Luckam
+ * @author James Dagres jdagres
+ *  
+ * @author Matt Luckam mcl209
  * 
  * @version Dec 5, 2013
  * 
