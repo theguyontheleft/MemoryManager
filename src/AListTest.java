@@ -59,5 +59,20 @@ public class AListTest extends TestCase
 
         assertEquals( myList.length(), 0 );
     }
+    
+    /**
+     * tests increasing in size of the array
+     */
+    public void testIncreaeOfSize()
+    {
+        AList<Integer> myList = new AList<Integer>( 2 );
+        
+        myList.insert( 1 );
+        myList.insert( 2 );
+        myList.insert( 3 );
+        
+        assertEquals( 3, myList.length() );
+        
+    }
 
 }
