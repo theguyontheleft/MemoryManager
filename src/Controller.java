@@ -36,9 +36,6 @@ public class Controller
      */
     public Controller()
     {
-        // Initialize the data structures
-        subscribersBintree_ = new Bintree<Point2D.Double, String>();
-
         // initialize memory variables
         String commandFileName_ = null;
         Integer numberBuffs = null;
@@ -80,6 +77,9 @@ public class Controller
             // Create the bufferPool and memoryManager
             createBufferPool();
             createMemoryManager();
+            // Initialize the data structures
+            subscribersBintree_ =
+                    new Bintree<Point2D.Double, String>( memoryManager_ );
 
             // The ultimate try catch
             try
@@ -114,6 +114,8 @@ public class Controller
             commandParser( command );
         }
         br.close();
+
+        subscribersBintree_.printStat();
     }
 
     /**

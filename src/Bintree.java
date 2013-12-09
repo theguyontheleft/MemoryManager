@@ -57,10 +57,6 @@ public class Bintree<Key, E>
         treeDepth = 0;
 
         memoryManager = new MemoryManager();
-        // ///////////////////
-        // insert for memory manager doesnt care if it is a node or data b/c its
-        // always going to be a byte array
-        // ////////////////////
 
         // insert the empty flyweight watcher record
         flyWeightHandle = new byte[4];
@@ -73,6 +69,32 @@ public class Bintree<Key, E>
         root = flyWeight;
 
         nodeCount++;
+    }
+
+    /**
+     * Constructor that passes a memory manager
+     * 
+     * @param newMemoryManager
+     *            memory manager that is already constructed
+     */
+    public Bintree( MemoryManager newMemoryManager )
+    {
+        treeDepth = 0;
+
+        memoryManager = newMemoryManager;
+
+        // insert the empty flyweight watcher record
+        flyWeightHandle = new byte[4];
+
+        flyWeightHandle = memoryManager.insert( new byte[16] ).clone();
+        flyWeight = new NodeLeaf( flyWeightHandle );
+        byte[] currentHandle = memoryManager.insert( flyWeight.serialize() );
+        flyWeight.setCurrentHandle( currentHandle );
+
+        root = flyWeight;
+
+        nodeCount++;
+
     }
 
     /**
@@ -796,6 +818,7 @@ public class Bintree<Key, E>
     public void print()
     {
         printHelper( root );
+        memoryManager.print();
     }
 
     /**
@@ -848,6 +871,12 @@ public class Bintree<Key, E>
         }
 
     }
+
+    public void printStat()
+    {
+        memoryManager.printStat();
+    }
+
     //
     // /**
     // * returns depth of the Bintree

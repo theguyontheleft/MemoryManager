@@ -65,8 +65,7 @@ public class BufferPool implements BufferPoolADT
      * @param newBlockSize
      *            size of the block
      */
-    public BufferPool( int numberOfBuffers,
-            int newBlockSize )
+    public BufferPool( int numberOfBuffers, int newBlockSize )
     {
         pool = new AList<Buffer>( numberOfBuffers );
 
@@ -125,7 +124,8 @@ public class BufferPool implements BufferPoolADT
         // toInsert.position( pos - (blockNumberInFile * blockSize) );
         // toInsert.put( space, 0, sz );
 
-        pool.getValue().setBlock( toInsert.array() ); // TODO: is this still necessary
+        pool.getValue().setBlock( toInsert.array() ); // TODO: is this still
+                                                      // necessary
         pool.getValue().setDirtyBit( true );
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Old
@@ -185,8 +185,8 @@ public class BufferPool implements BufferPoolADT
                         memoryPool_.getDisk().seek(
                                 pool.getValue().getBlockNumberFile()
                                         * blockSize );
-                        memoryPool_.getDisk().write(
-                                pool.getValue().getBlock() );
+                        memoryPool_.getDisk()
+                                .write( pool.getValue().getBlock() );
                         diskWrites++;
                     }
                     catch ( IOException e )
@@ -246,8 +246,7 @@ public class BufferPool implements BufferPoolADT
 
             // Read the bytes remaining in the block and less than the
             // bytesToRead variable
-            for ( int i = 0; i < numberOfBytesInBlock
-                    && 0 < bytesToRead; i++, startingByteInBlock++, bytesToRead-- )
+            for ( int i = 0; i < numberOfBytesInBlock && 0 < bytesToRead; i++, startingByteInBlock++, bytesToRead-- )
             {
                 // TODO: remove this is for debugging
                 // purposes
@@ -322,8 +321,7 @@ public class BufferPool implements BufferPoolADT
                 try
                 {
                     memoryPool_.getDisk().seek(
-                            pool.getValue().getBlockNumberFile()
-                                    * blockSize );
+                            pool.getValue().getBlockNumberFile() * blockSize );
                     memoryPool_.getDisk().write( pool.getValue().getBlock() );
                 }
                 catch ( IOException e )
@@ -394,5 +392,25 @@ public class BufferPool implements BufferPoolADT
     public int getDiskWrites()
     {
         return diskWrites;
+    }
+
+    public void print()
+    {
+        for ( int i = 0; i < pool.length(); i++ )
+        {
+            pool.moveToPos( i );
+            int output = pool.getValue().getBlockNumberFile();
+
+            if ( output >= 0 )
+            {
+                System.out.println( "Block ID of buffer" + i + " is " + output );
+            }
+            else
+            {
+                System.out
+                        .println( "Block ID of buffer" + i + " is " + "Empty" );
+            }
+
+        }
     }
 }

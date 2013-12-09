@@ -182,8 +182,12 @@ public class BintreeTest extends TestCase
 
     public void testPrint()
     {
+        BufferPool bufPool =
+                new BufferPool( 10, 10 );
+        MemoryManager memoryManager = new MemoryManager( bufPool );
+
         Bintree<Point2D.Double, String> testTree =
-                new Bintree<Point2D.Double, String>();
+                new Bintree<Point2D.Double, String>( memoryManager );
 
         Point2D.Double testPoint = new Point2D.Double();
         testPoint.setLocation( -100, -80 );

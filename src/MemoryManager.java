@@ -278,4 +278,22 @@ public class MemoryManager
 
         return -1;
     }
+
+    public void print()
+    {
+        bufferPool_.print();
+    }
+
+    public void printStat()
+    {
+        System.out.println( "Number of cache hits: "
+                + bufferPool_.getCacheHits() );
+        System.out.println( "Number of cache misses: "
+                + bufferPool_.getCacheMisses() );
+        System.out.println( "Number of disk reads: "
+                + bufferPool_.getDiskReads() );
+        System.out.println( "Number of disk writes: "
+                + bufferPool_.getDiskWrites() );
+
+    }
 }
