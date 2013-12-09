@@ -27,6 +27,7 @@ public class MemoryManager
     {
         array = new byte[10000];
         currentPos = 0;
+        freeList_ = new AList<MemoryBlock>( 0 );
     }
 
     /**
@@ -50,7 +51,7 @@ public class MemoryManager
      */
     public byte[] insert( byte[] newData )
     {
-        Integer handleLocation = currentPos;
+        int handleLocation = -1;
 
         // adds 2 byte length of message to a watcher
         if ( newData.length > 9 )
@@ -59,33 +60,43 @@ public class MemoryManager
                     ByteBuffer.allocate( 2 ).putShort( (short) newData.length )
                             .array();
 
-            // Look through the freelist to find free space in the bufferpool
-            int freeListPosition = findFreeSpace( newData );
-            if ( -1 == freeListPosition )
+            byte[] temp = new byte[messageLength.length + newData.length];
+            for ( int i = 0; i < messageLength.length; i++ )
             {
-                // TODO: grow the size of the memoryManager bufferPool to meet
-                // the requirements?
-
+                temp[i] = messageLength[i];
             }
-            else
+            for ( int i = 0; i < newData.length; i++ )
             {
-                // There was a spot in the free list TODO
-
-                // Remove the newly used memory block from the freeList_
-                // removeNewlyUsedSpace( freeListPosition );
-
-                // return
+                temp[i + 2] = newData[i];
             }
-
-            for ( int i = 0; i < messageLength.length; i++, currentPos++ )
-            {
-                array[currentPos] = messageLength[i];
-            }
+            newData = temp.clone();
         }
 
-        for ( int i = 0; i < newData.length; i++, currentPos++ )
+        // Look through the freelist to find free space in the bufferpool
+        int freeListPosition = findFreeSpace( newData.length );
+        if ( -1 == freeListPosition )
         {
-            array[currentPos] = newData[i];
+            handleLocation = currentPos;
+            for ( int i = 0; i < newData.length; i++, currentPos++ )
+            {
+                array[currentPos] = newData[i];
+            }
+        }
+        else
+        {
+            // There was a spot in the free list TODO
+            freeList_.moveToPos( freeListPosition );
+
+            MemoryBlock freeMemoryBlock = freeList_.getValue();
+            int position = freeMemoryBlock.getPosition();
+            handleLocation = position;
+            for ( int i = 0; i < newData.length; i++, position++ )
+            {
+                array[position] = newData[i];
+            }
+
+            // Remove the newly used memory block from the freeList_
+            removeNewlyUsedSpace( freeListPosition, newData.length );
         }
 
         return ByteBuffer.allocate( 4 ).putInt( handleLocation ).array();
@@ -159,6 +170,11 @@ public class MemoryManager
     {
         int handleLocation = ByteBuffer.wrap( handle ).getInt();
 
+        // space freed in memory
+        int freedSpace = 0;
+        // initial handle position
+        int initialHandleLocation = handleLocation;
+
         // delete internal node
         if ( array[handleLocation] == 0 && isLeaf )
         {
@@ -166,6 +182,7 @@ public class MemoryManager
             {
                 array[handleLocation] = 0;
             }
+            freedSpace = 9;
         }
         // delete leaf node
         else if ( array[handleLocation] == 1 && isLeaf )
@@ -174,6 +191,7 @@ public class MemoryManager
             {
                 array[handleLocation] = 0;
             }
+            freedSpace = 5;
         }
         // delete a watcher
         else
@@ -190,24 +208,27 @@ public class MemoryManager
             {
                 array[handleLocation] = 0;
             }
+            freedSpace = sizeOfMessage + 2;
         }
 
-        // Update the freedSpace TODO
-        // addNewlyFreedSpace( handle, handleLocation );
+        // Update the freedSpace
+        addNewlyFreedSpace( freedSpace, initialHandleLocation );
     }
 
     /**
      * This method adds the newly deleted/freed space to the free arraylist
      * 
-     * @param handle
+     * @param lengthOfFreeSpace
      * @param handleLocation
      */
-    private void addNewlyFreedSpace( byte[] handle, int handleLocation )
+    private void
+            addNewlyFreedSpace( int lengthOfFreedSpace, int handleLocation )
     {
-        MemoryBlock memoryBlock_ =
-                new MemoryBlock( handleLocation, handle.length );
+        // Creates a memory block with the position and length
+        MemoryBlock memoryBlock =
+                new MemoryBlock( handleLocation, lengthOfFreedSpace );
 
-        freeList_.insert( memoryBlock_ );
+        freeList_.insert( memoryBlock );
     }
 
     /**
@@ -216,10 +237,28 @@ public class MemoryManager
      * the freeList.
      * 
      * @param positionToRemove
+     * @param lengthOfFreeSpaceUsed
      */
-    private void removeNewlyUsedSpace( int positionToRemove )
+    private void removeNewlyUsedSpace( int positionToRemove,
+            int lengthOfFreeSpaceUsed )
     {
         // TODO:
+        freeList_.moveToPos( positionToRemove );
+        MemoryBlock memoryBlockUsed = freeList_.getValue();
+
+        // Case 1: memory block still has free space
+        if ( memoryBlockUsed.getLength() > lengthOfFreeSpaceUsed )
+        {
+            freeList_.getValue().setLength(
+                    memoryBlockUsed.getLength() - lengthOfFreeSpaceUsed );
+            freeList_.getValue().setPosition(
+                    memoryBlockUsed.getPosition() + lengthOfFreeSpaceUsed );
+        }
+        else
+        // Case 2: remove memory from freelist because it's full
+        {
+            freeList_.remove();
+        }
     }
 
     /**
@@ -261,20 +300,23 @@ public class MemoryManager
     /**
      * Finds free space inside the free list using a circular fit.
      * 
-     * @param byteToStore
+     * @param lengthOfDataToInsert
      * @return the position of the compatible freeLst inside the freeList_ array
      */
-    public int findFreeSpace( byte[] byteToStore )
+    public int findFreeSpace( int lengthOfDataToInsert )
     {
+        freeList_.moveToStart();
+
         // Iterate through the freelist arraylist looking for space equal or
         // greater than the length of the byteToStore
-        // for ( int j = 0; j < freeList_.length(); j++ )
-        // { TODO
-        // if ( freeList_.itemUsed( j ).getLength() >= byteToStore.length )
-        // {
-        // return j;
-        // }
-        // }
+        for ( int j = 0; j < freeList_.length(); j++ )
+        {
+            freeList_.moveToPos( j );
+            if ( freeList_.getValue().getLength() >= lengthOfDataToInsert )
+            {
+                return j;
+            }
+        }
 
         return -1;
     }
