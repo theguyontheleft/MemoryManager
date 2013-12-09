@@ -18,11 +18,9 @@ public class Controller
     // The bintree to store the coordinates of the watchers
     private Bintree<Point2D.Double, String> subscribersBintree_ = null;
 
-    private Integer recSize_;
     private Integer blockSize_;
     private String commandFileName_;
     private Integer numberBuffs_;
-    private long size_;
 
     // Instance to the bufferPool
     static BufferPool bufPool_;
@@ -36,11 +34,6 @@ public class Controller
      */
     public Controller()
     {
-        // initialize memory variables
-        String commandFileName_ = null;
-        Integer numberBuffs = null;
-        recSize_ = 4; // TODO: what is this? This should be varying
-        size_ = 0;
     }
 
     /**
@@ -247,8 +240,6 @@ public class Controller
         // Check to ensure the arguments are in the form: delete <user>a
         if ( s[0].contains( "delete" ) )
         {
-            String subscriberToRemove = s[0].trim();
-
             Double longitudeX = Double.parseDouble( s[1].trim() );
             Double latitudeY = Double.parseDouble( s[2].trim() );
 

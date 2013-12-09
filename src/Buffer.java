@@ -24,6 +24,10 @@ public class Buffer
      */
     private boolean dirtyBit;
 
+    /**
+     * @param newBlock
+     * @param newBlockNumber
+     */
     public Buffer( byte[] newBlock, int newBlockNumber )
     {
         block = newBlock;

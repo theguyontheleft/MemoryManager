@@ -53,11 +53,8 @@ public class MemoryManagerTest extends TestCase
     public void testInsertAndRemove()
     {
         // Insert 4, insert 8, remove 4 (adds it to freespace), then insert 4
-        // into the freedspace
+        // into the freed space
         byte[] handleOfFirst4 = memoryManager_.insert( testByteArray4_ );
-        // memoryManager_.insert( testByteArray8_ ); TODO
-        // memoryManager_.delete( handleOfFirst4, true );
-        // byte[] handleOfSecond4 = memoryManager_.insert( testByteArray4_ );
 
         // The newly inserted four should have the same handle of the freespace
         assertEquals( 4, handleOfFirst4.length );
@@ -98,7 +95,6 @@ public class MemoryManagerTest extends TestCase
         memoryManager_.delete( leafNodeHandle10, true );
         memoryManager_.delete( leafNodeHandle12, true );
         memoryManager_.delete( leafNodeHandle14, true );
-
     }
 
     /**
@@ -113,5 +109,5 @@ public class MemoryManagerTest extends TestCase
 
         memoryBlock_.setStartPosition( 1337 );
         assertEquals( memoryBlock_.getStartPosition(), 1337 );
-    }
+    }    
 }

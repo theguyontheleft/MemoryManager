@@ -24,6 +24,9 @@ public class MemoryBlock
         length_ = length;
     }
 
+    /** 
+     * @return the end position
+     */
     public int getEndPosition()
     {
         return position_ + length_;

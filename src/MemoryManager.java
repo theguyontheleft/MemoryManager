@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
  */
 public class MemoryManager
 {
-    // private byte array[]; // TODO: remove
     private int currentPos;
 
     // Static reference to the buffer pool
@@ -19,16 +18,6 @@ public class MemoryManager
      * Reference to the freeList
      */
     AList<MemoryBlock> freeList_;
-
-    // /**
-    // * TODO: remove un parametized constructor
-    // */
-    // public MemoryManager()
-    // {
-    // array = new byte[10000];
-    // currentPos = 0;
-    // freeList_ = new AList<MemoryBlock>( 0 );
-    // }
 
     /**
      * @param bufferPool
@@ -83,7 +72,7 @@ public class MemoryManager
         }
         else
         {
-            // There was a spot in the free list TODO
+            // There was a spot in the free list 
             freeList_.moveToPos( freeListPosition );
 
             MemoryBlock freeMemoryBlock = freeList_.getValue();
@@ -224,7 +213,6 @@ public class MemoryManager
     private void removeNewlyUsedSpace( int positionToRemove,
             int lengthOfFreeSpaceUsed )
     {
-        // TODO:
         freeList_.moveToPos( positionToRemove );
         MemoryBlock memoryBlockUsed = freeList_.getValue();
 
@@ -334,11 +322,17 @@ public class MemoryManager
         return -1;
     }
 
+    /**
+     * Prints out the buffer pool information
+     */
     public void print()
     {
         bufferPool_.print();
     }
 
+    /**
+     * Prints out the bufferpool cache statistics
+     */
     public void printStat()
     {
         System.out.println( "Number of cache hits: "
