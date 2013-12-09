@@ -42,11 +42,11 @@ public class BintreeTest extends TestCase
 
         testTree.insert( testPoint2, name2 );
 
-        assertEquals( false, testTree.inTree( testPoint2 ) );
+        assertEquals( true, testTree.inTree( testPoint2 ) );
 
         testTree.insert( testPoint3, name3 );
 
-        assertEquals( false, testTree.inTree( testPoint3 ) );
+        assertEquals( true, testTree.inTree( testPoint3 ) );
 
     }
 

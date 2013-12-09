@@ -102,30 +102,6 @@ public class MemoryManagerTest extends TestCase
     }
 
     /**
-     * Tests the MemoryPool Class
-     * 
-     * @throws IOException
-     */
-    public void testMemoryPool()
-    {
-        try
-        {
-            MemoryPool memoryPool = new MemoryPool();
-            RandomAccessFile raf = memoryPool.getDiskFile();
-
-            assertEquals( memoryPool.getFileLength(), 0 );
-
-            assertEquals( memoryPool.getDisk(), raf );
-
-            memoryPool.closeFile();
-        }
-        catch ( Exception ex )
-        {
-            System.err.print( "Error when testing the memory Pool: " + ex );
-        }
-    }
-
-    /**
      * Tests the MemoryBlock object used in the freelist
      */
     public void testMemoryBlock()

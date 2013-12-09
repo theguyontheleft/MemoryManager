@@ -118,7 +118,6 @@ public class BufferPool implements BufferPoolADT
 
         int bytesToWrite = sz;
         int numberOfBytesInBlock = 0;
-        int tempPosition = pos;
         int j = 0;
 
         while ( bytesToWrite > 0 )
@@ -128,7 +127,7 @@ public class BufferPool implements BufferPoolADT
             int blockNumberInPool = this.contains( blockNumberInFile );
 
             // gets desired bytes from buffer pool
-            int startingByteInBlock = tempPosition % blockSize;
+            int startingByteInBlock = pos % blockSize;
 
             // Check how many bytes from record are in the current block
             numberOfBytesInBlock = blockSize - startingByteInBlock;
@@ -171,7 +170,6 @@ public class BufferPool implements BufferPoolADT
 
             bytesToWrite -= numberOfBytesInBlock;
 
-            tempPosition = 0;
             pos += numberOfBytesInBlock;
         }
     }
@@ -191,7 +189,6 @@ public class BufferPool implements BufferPoolADT
     {
         int bytesToRead = sz;
         int numberOfBytesInBlock = 0;
-        int tempPosition = pos;
 
         // Handle messages that span multiple blocks TODO test this
         while ( bytesToRead > 0 )
@@ -202,7 +199,7 @@ public class BufferPool implements BufferPoolADT
             int blockNumberInPool = this.contains( blockNumberInFile );
 
             // gets desired bytes from buffer pool
-            int startingByteInBlock = tempPosition % blockSize;
+            int startingByteInBlock = pos % blockSize;
 
             // Check how many bytes from record are in the current block
             numberOfBytesInBlock = blockSize - startingByteInBlock;
@@ -284,7 +281,6 @@ public class BufferPool implements BufferPoolADT
                         pool.getValue().getBlock()[startingByteInBlock];
             }
 
-            tempPosition = 0;
             pos += numberOfBytesInBlock;
         }
     }
