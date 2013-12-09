@@ -18,18 +18,23 @@ public class BufferPoolTest extends TestCase
      */
     public void testBufferAltercations()
     {
-        byte[] byteToTest = new byte[20];
+        byte[] byteToInsert = new byte[20];
+        for ( int j = 0; j < 20; j++ )
+        {
+            byteToInsert[j] = (byte) j;
+        }
+
         byte[] byteToTest1 = new byte[20];
 
-        BufferPool pool = new BufferPool( 4, 10 );
+        BufferPool pool = new BufferPool( 10, 10 );
 
-        pool.insert( byteToTest, 20, 6 );
+        pool.insert( byteToInsert, 20, 6 );
         pool.getbytes( byteToTest1, 20, 6 );
 
         for ( int j = 0; j < 20; j++ )
         {
-            System.out.println("VALUE: " + byteToTest[j]);
-            assert (byteToTest[j] == byteToTest1[j]);
+            System.out.println( "VALUE: " + byteToInsert[j] );
+            assert (byteToInsert[j] == byteToTest1[j]);
         }
     }
 

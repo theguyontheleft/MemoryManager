@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -108,25 +107,65 @@ public class BufferPool implements BufferPoolADT
      */
     public void insert( byte[] space, int sz, int pos )
     {
-        int blockNumberInFile = pos / blockSize;
-        int blockNumberInPool = this.contains( blockNumberInFile );
 
-        // if buffer was not in the buffer pool
-        if ( blockNumberInPool == -1 )
+        int bytesToWrite = sz;
+        int numberOfBytesInBlock = 0;
+        int tempPosition = pos;
+        int j = 0;
+
+        while ( bytesToWrite > 0 )
         {
-            // this.getbytes( new byte[space.length], sz, pos ); Commented out
-            this.getbytes( space, sz, pos );
-            blockNumberInPool = this.contains( blockNumberInFile );
+            int blockNumberInFile = pos / blockSize;
+
+            int blockNumberInPool = this.contains( blockNumberInFile );
+
+            // gets desired bytes from buffer pool
+            int startingByteInBlock = tempPosition % blockSize;
+
+            // Check how many bytes from record are in the current block
+            numberOfBytesInBlock = blockSize - startingByteInBlock;
+            byte[] tempByteArray;
+
+            if ( numberOfBytesInBlock < bytesToWrite )
+            {
+                tempByteArray = new byte[numberOfBytesInBlock];
+            }
+            else
+            {
+                tempByteArray = new byte[bytesToWrite];
+            }
+
+            for ( int i = 0; i < tempByteArray.length && j < space.length; i++, j++ )
+            {
+                tempByteArray[i] = space[j];
+            }
+
+            // if buffer was not in the buffer pool
+            if ( blockNumberInPool == -1 )
+            {
+                // this.getbytes( new byte[space.length], sz, pos ); Commented
+                // out
+                this.getbytes( new byte[tempByteArray.length],
+                        tempByteArray.length, pos );
+                blockNumberInPool = this.contains( blockNumberInFile );
+            }
+
+            pool.moveToPos( blockNumberInPool );
+
+            // inputs record in given location in buffer
+            toInsert = ByteBuffer.wrap( pool.getValue().getBlock() );
+            toInsert.position( startingByteInBlock );
+            toInsert.put( tempByteArray, 0, tempByteArray.length );
+
+            pool.getValue().setBlock( toInsert.array() ); // TODO: is this still
+                                                          // necessary
+            pool.getValue().setDirtyBit( true );
+
+            bytesToWrite -= numberOfBytesInBlock;
+
+            tempPosition = 0;
+            pos += numberOfBytesInBlock;
         }
-
-        // // inputs record in given location in buffer
-        // toInsert = ByteBuffer.wrap( pool.getValue().getBlock() );
-        // toInsert.position( pos - (blockNumberInFile * blockSize) );
-        // toInsert.put( space, 0, sz );
-
-        pool.getValue().setBlock( toInsert.array() ); // TODO: is this still
-                                                      // necessary
-        pool.getValue().setDirtyBit( true );
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Old
         // int blockNumberInFile = pos / blockSize;
@@ -248,11 +287,8 @@ public class BufferPool implements BufferPoolADT
             // bytesToRead variable
             for ( int i = 0; i < numberOfBytesInBlock && 0 < bytesToRead; i++, startingByteInBlock++, bytesToRead-- )
             {
-                // TODO: remove this is for debugging
-                // purposes
-                space[sz - bytesToRead] = (byte) (sz - bytesToRead);
-                // space[sz - bytesToRead] =
-                // pool.getValue().getBlock()[startingByteInBlock];
+                space[sz - bytesToRead] =
+                        pool.getValue().getBlock()[startingByteInBlock];
             }
 
             // Update the remaining bytes to read and set pos to 0
@@ -261,52 +297,84 @@ public class BufferPool implements BufferPoolADT
         }
     }
 
-    /*
-     * OLD get bytes public void getbytes( byte[] space, int sz, int pos ) { int
-     * blockNumberInFile = pos / blockSize; int blockNumberInPool =
-     * this.contains( blockNumberInFile );
-     * 
-     * int bytesToRead = sz; int numberOfBytesInBlock = 0;
-     * 
-     * // Handle messages that span multiple blocks TODO while ( bytesToRead > 0
-     * ) { // TODO Check how many bytes from record are in the current // block
-     * numberOfBytesInBlock = blockSize - pos; // TODO: move between buffers,
-     * use for loops
-     * 
-     * // if buffer is not in the pool if ( blockNumberInPool == -1 ) {
-     * pool.moveToEnd();
-     * 
-     * // value in buffer has changed, write to file if (
-     * pool.getValue().isDirtyBit() ) { // seeks and writes to file try {
-     * memoryPool_.getDisk().seek( pool.getValue().getBlockNumberFile()
-     * blockSize );
-     * 
-     * memoryPool_.getDisk().write( pool.getValue().getBlock() ); diskWrites++;
-     * } catch ( IOException e ) { System.out .println(
-     * "error in bufferpool getbytes seek" ); e.printStackTrace(); } } // seeks
-     * and reads new block from file to buffer pool try { // Whenever the file
-     * is being read from make sure the new // position to read is less than the
-     * file length // TODO: test if ( pos < memoryPool_.getFileLength() ) { //
-     * moves to correct position in file memoryPool_.getDisk().seek(
-     * blockNumberInFile * blockSize ); // overwrites LRU block with new block
-     * values from file // temp = new byte[blockSize];
-     * memoryPool_.getDisk().read( temp, 0, blockSize );
-     * pool.getValue().setBlock( temp.clone() ); diskReads++; } } catch (
-     * IOException e ) { System.out.println(
-     * "error in bufferpool getbytes seek#2" ); e.printStackTrace(); }
-     * 
-     * pool.getValue().setBlockNumberFile( blockNumberInFile );
-     * pool.getValue().setDirtyBit( false ); pool.itemUsed( pool.currPos() );
-     * cacheMisses++; } // buffer is in the pool else { pool.itemUsed(
-     * blockNumberInPool ); cacheHits++; }
-     * 
-     * }
-     * 
-     * // gets desired bytes from buffer pool int startingByteInBlock = pos %
-     * blockSize; pool.moveToStart(); for ( int i = 0; i < sz; i++,
-     * startingByteInBlock++ ) { space[i] =
-     * pool.getValue().getBlock()[startingByteInBlock]; } }
-     */
+    // /**
+    // * gets the requested bytes from the buffer pool TODO: OLD
+    // *
+    // * @param space
+    // * byte array to be inserted
+    // * @param sz
+    // * size of the array
+    // * @param pos
+    // * position of the array in the source
+    // */
+    // @Override
+    // public void getbytes( byte[] space, int sz, int pos )
+    // {
+    // int blockNumberInFile = pos / blockSize;
+    // int blockNumberInPool = this.contains( blockNumberInFile );
+    //
+    // // if buffer is not in the pool
+    // if ( blockNumberInPool == -1 )
+    // {
+    // pool.moveToEnd();
+    // // value in buffer has changed, write to file
+    // if ( pool.getValue().isDirtyBit() )
+    // {
+    // // seeks and writes to file
+    // try
+    // {
+    // memoryPool_.getDisk().seek(
+    // pool.getValue().getBlockNumberFile() * blockSize );
+    //
+    // memoryPool_.getDisk().write( pool.getValue().getBlock() );
+    // diskWrites++;
+    // }
+    // catch ( IOException e )
+    // {
+    // System.out.println( "error in bufferpool getbytes seek" );
+    // e.printStackTrace();
+    // }
+    //
+    // }
+    // // seeks and reads new block from file to buffer pool
+    // try
+    // {
+    // // moves to correct position in file
+    // memoryPool_.getDisk().seek( blockNumberInFile * blockSize );
+    // // overwrites LRU block with new block values from file
+    // // temp = new byte[blockSize];
+    // memoryPool_.getDisk().read( temp, 0, blockSize );
+    // pool.getValue().setBlock( temp.clone() );
+    // diskReads++;
+    // }
+    // catch ( IOException e )
+    // {
+    // System.out.println( "error in bufferpool getbytes seek#2" );
+    // e.printStackTrace();
+    // }
+    //
+    // pool.getValue().setBlockNumberFile( blockNumberInFile );
+    // pool.getValue().setDirtyBit( false );
+    // pool.itemUsed( pool.currPos() );
+    // cacheMisses++;
+    //
+    // }
+    // // buffer is in the pool
+    // else
+    // {
+    // pool.itemUsed( blockNumberInPool );
+    // cacheHits++;
+    // }
+    //
+    // // gets desired bytes from buffer pool
+    // int startingByteInBlock = pos % blockSize;
+    // pool.moveToStart();
+    // for ( int i = 0; i < sz; i++, startingByteInBlock++ )
+    // {
+    // space[i] = pool.getValue().getBlock()[startingByteInBlock];
+    // }
+    //
+    // }
 
     /**
      * flushes all values from cache to disk

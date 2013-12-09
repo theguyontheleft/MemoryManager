@@ -65,10 +65,10 @@ class AList<E> implements List<E>
     {
         if ( listSize == maxSize )
         {
-            if( maxSize ==  0  )
+            if ( maxSize == 0 )
             {
                 maxSize = 1;
-            }            
+            }
             grow();
         }
 

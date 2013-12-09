@@ -79,6 +79,22 @@ public class MemoryManagerTest extends TestCase
         memoryManager_.delete( leafNodeHandle4, true );
         memoryManager_.delete( leafNodeHandle3, true );
 
+        byte[] leafNodeHandle6 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle7 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle8 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle9 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle10 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle11 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle12 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle13 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle14 = memoryManager_.insert( leafNode1 );
+
+        memoryManager_.delete( leafNodeHandle6, true );
+        memoryManager_.delete( leafNodeHandle8, true );
+        memoryManager_.delete( leafNodeHandle10, true );
+        memoryManager_.delete( leafNodeHandle12, true );
+        memoryManager_.delete( leafNodeHandle14, true );
+
     }
 
     /**
