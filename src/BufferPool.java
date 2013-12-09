@@ -253,8 +253,10 @@ public class BufferPool implements BufferPoolADT
                     {
                         // This can happen when the memory manager decides to
                         // “grow” the size of its memory pool
-                        System.out
-                                .println( "bufferpool getbytes tried reading from outside the file." );
+                        // System.out
+                        // .println(
+                        // "bufferpool getbytes tried reading from outside the file."
+                        // );
                     }
                 }
                 catch ( IOException e )
@@ -462,6 +464,9 @@ public class BufferPool implements BufferPoolADT
         return diskWrites;
     }
 
+    /**
+     * Prints the bufferPool
+     */
     public void print()
     {
         for ( int i = 0; i < pool.length(); i++ )
@@ -478,7 +483,15 @@ public class BufferPool implements BufferPoolADT
                 System.out
                         .println( "Block ID of buffer" + i + " is " + "Empty" );
             }
-
         }
+    }
+    
+    /**
+     * Closes the file the memorypool uses
+     * @throws IOException 
+     */
+    public void closeFile() throws IOException
+    {
+        memoryPool_.closeFile();
     }
 }

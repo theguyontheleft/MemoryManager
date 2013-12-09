@@ -116,6 +116,8 @@ public class Controller
         br.close();
 
         subscribersBintree_.printStat();
+        bufPool_.flush();
+        bufPool_.closeFile();
     }
 
     /**

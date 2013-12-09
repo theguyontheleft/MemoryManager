@@ -19,7 +19,7 @@ public class MemoryPool
      */
     public static final String DISK_FILE_NAME = "p4bin.dat";
 
-    private RandomAccessFile disk_;
+    private static RandomAccessFile disk_;
 
     /**
      * Basic constructor

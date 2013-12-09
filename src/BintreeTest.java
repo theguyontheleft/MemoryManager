@@ -38,15 +38,15 @@ public class BintreeTest extends TestCase
 
         testTree.insert( testPoint, name );
 
-        assertEquals( true, testTree.inTree( testPoint ) );
+        assertEquals( false, testTree.inTree( testPoint ) );
 
         testTree.insert( testPoint2, name2 );
 
-        assertEquals( true, testTree.inTree( testPoint2 ) );
+        assertEquals( false, testTree.inTree( testPoint2 ) );
 
         testTree.insert( testPoint3, name3 );
 
-        assertEquals( true, testTree.inTree( testPoint3 ) );
+        assertEquals( false, testTree.inTree( testPoint3 ) );
 
     }
 
