@@ -26,19 +26,22 @@ public class MemoryPool
      * 
      * @throws FileNotFoundException
      */
-    MemoryPool() throws FileNotFoundException
+    MemoryPool() throws IOException, FileNotFoundException
     {
         createFileReference();
     }
 
     /**
      * Creates the random access file
+     * @throws IOException, FileNotFoundException
+    { 
      * 
      * @throws FileNotFoundException
      */
-    private void createFileReference() throws FileNotFoundException
+    private void createFileReference() throws IOException, FileNotFoundException
     {
         disk_ = new RandomAccessFile( DISK_FILE_NAME, "rw" );
+        disk_.setLength( 0 );
     }
 
     /**

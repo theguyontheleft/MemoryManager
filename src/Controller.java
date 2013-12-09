@@ -23,10 +23,10 @@ public class Controller
     private Integer numberBuffs_;
 
     // Instance to the bufferPool
-    static BufferPool bufPool_;
+    private static BufferPool bufPool_; // TODO static
 
     // Instance of the Memory Manager
-    MemoryManager memoryManager_;
+    private static MemoryManager memoryManager_;
 
     /**
      * Constructor method initializes the references to the structures used, and
@@ -210,7 +210,8 @@ public class Controller
             // If it was added successfully then display the output:
             // <Watcher name> <x> <y> is added to the bintree
             String outputString2 =
-                    s[3] + " " + longitudeX + " " + latitudeY
+                    s[3] + " " + Double.parseDouble( longitudeX ) + " "
+                            + Double.parseDouble( latitudeY )
                             + " is added into the bintree";
             System.out.println( outputString2 );
         }
@@ -221,7 +222,8 @@ public class Controller
             // following output:
             // <coordinate> duplicates a watcher already in the bintree
             String outputString =
-                    name + " " + longitudeX + " " + latitudeY
+                    name + " " + Double.parseDouble( longitudeX ) + " "
+                            + Double.parseDouble( latitudeY )
                             + " duplicates a watcher already in the bintree";
             System.out.println( outputString );
         }

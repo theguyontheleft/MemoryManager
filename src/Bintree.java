@@ -1,3 +1,4 @@
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
@@ -48,28 +49,6 @@ public class Bintree<Key, E>
     private Node flyWeight;
 
     private byte[] flyWeightHandle;
-
-//    /**
-//     * Default constructor
-//     */
-//    public Bintree()
-//    { OLD TODO: remove this
-//        treeDepth = 0;
-//
-//        memoryManager = new MemoryManager();
-//
-//        // insert the empty flyweight watcher record
-//        flyWeightHandle = new byte[4];
-//
-//        flyWeightHandle = memoryManager.insert( new byte[16] ).clone();
-//        flyWeight = new NodeLeaf( flyWeightHandle );
-//        byte[] currentHandle = memoryManager.insert( flyWeight.serialize() );
-//        flyWeight.setCurrentHandle( currentHandle );
-//
-//        root = flyWeight;
-//
-//        nodeCount++;
-//    }
 
     /**
      * Constructor that passes a memory manager
@@ -620,12 +599,10 @@ public class Bintree<Key, E>
 
         // node in rectangle
         else if ( node.isLeaf()
-                && eq.intersects( map )
-                && eq.contains(
-                        ((Watcher) deSerialize( ((NodeLeaf) node).getElement(),
-                                false )).getWatcherPoint().getX(),
-                        ((Watcher) deSerialize( ((NodeLeaf) node).getElement(),
-                                false )).getWatcherPoint().getY() ) )
+                && (map.getMinX() <= eq.getMaxX()
+                        && map.getMaxX() > eq.getMinX()
+                        && map.getMinY() <= eq.getMaxY() && map.getMaxY() > eq
+                        .getMinY()) )
         {
             double x =
                     Math.pow(
@@ -646,7 +623,7 @@ public class Bintree<Key, E>
             double distance = Math.sqrt( x + y );
 
             // node in circle
-            if ( distance < radius )
+            if ( distance <= radius )
             {
 
                 System.out.println( ((Watcher) deSerialize(
@@ -686,7 +663,9 @@ public class Bintree<Key, E>
             }
 
             // gets to the right
-            if ( eq.intersects( rightBound ) )
+            if ( eq.intersects( rightBound )
+                    || (rightBound.getMinX() <= eq.getMaxX() && rightBound
+                            .getMaxX() > eq.getMinX()) )
             {
 
                 rangeSearchHelper(
@@ -718,7 +697,9 @@ public class Bintree<Key, E>
             }
 
             // gets to the right
-            if ( eq.intersects( rightBound ) )
+            if ( eq.intersects( rightBound )
+                    || (rightBound.getMinY() <= eq.getMaxY() && rightBound
+                            .getMaxY() > eq.getMinY()) )
             {
                 rangeSearchHelper(
                         (Node) deSerialize( ((NodeInternal) node).getRight(),
