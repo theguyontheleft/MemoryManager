@@ -65,8 +65,7 @@ class AList<E> implements List<E>
     {
         if ( listSize == maxSize )
         {
-            moveToEnd();
-            remove();
+            grow();
         }
 
         moveToStart();
@@ -217,5 +216,19 @@ class AList<E> implements List<E>
     public E getValue()
     {
         return listArray[curr];
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private void grow()
+    {
+        maxSize *= 2;
+        E[] temp = (E[]) new Object[maxSize];
+        for ( int i = 0; i < listArray.length; i++ )
+        {
+            temp[i] = listArray[i];
+        }
+
+        listArray = temp.clone();
+
     }
 }
