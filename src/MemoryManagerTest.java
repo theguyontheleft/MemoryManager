@@ -67,9 +67,18 @@ public class MemoryManagerTest extends TestCase
     {
         memoryManager_ = new MemoryManager();
 
-        // Insert 8, then 4, then 4, then 2.
-        // Remove the first 4, remove the second
-        assertEquals( 4, 4 ); // TODO
+        byte[] leafNode1 = { (byte) 1, (byte) 0, (byte) 0, (byte) 0, (byte) 0 };
+
+        byte[] leafNodeHandle1 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle2 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle3 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle4 = memoryManager_.insert( leafNode1 );
+        byte[] leafNodeHandle5 = memoryManager_.insert( leafNode1 );
+
+        memoryManager_.delete( leafNodeHandle2, true );
+        memoryManager_.delete( leafNodeHandle4, true );
+        memoryManager_.delete( leafNodeHandle3, true );
+
     }
 
     /**

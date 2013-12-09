@@ -287,9 +287,9 @@ public class MemoryManager
     {
         freeList_.moveToStart();
 
-        int startCompare = freeList_.getValue().getStartPosition() - 1;
+        int startCompare = freeList_.getValue().getStartPosition();
         int endCompare =
-                startCompare + freeList_.getValue().getEndPosition() + 1;
+                freeList_.getValue().getEndPosition();
 
         for ( int i = 1; i < freeList_.length(); i++ )
         {
@@ -302,6 +302,7 @@ public class MemoryManager
                 int newStart = freeList_.getValue().getStartPosition();
                 int addLength = freeList_.getValue().getLength();
                 freeList_.remove();
+                i--;
 
                 // extend block to the left
                 freeList_.moveToStart();
@@ -319,6 +320,7 @@ public class MemoryManager
                 // remove old block
                 int addLength = freeList_.getValue().getLength();
                 freeList_.remove();
+                i--;
 
                 // extend block to the right
                 freeList_.moveToStart();
