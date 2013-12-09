@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -41,11 +42,14 @@ public class BufferPoolTest extends TestCase
     /**
      * tests the constructor
      * 
-     * @throws FileNotFoundException
+     * @throws IOException
      */
-    public void testBufferPool() throws FileNotFoundException
+    public void testBufferPool() throws IOException
     {
         BufferPool pool = new BufferPool( 4, 10 );
+
+        MemoryPool memPool = new MemoryPool();
+        memPool.getDisk();
 
         assertEquals( 0, pool.getCacheHits() );
         assertEquals( 0, pool.getCacheMisses() );
