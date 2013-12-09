@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -32,11 +31,13 @@ public class BufferPoolTest extends TestCase
         pool.insert( byteToInsert, 20, 6 );
         pool.getbytes( byteToTest1, 20, 6 );
 
-        for ( int j = 0; j < 20; j++ )
-        {
-            System.out.println( "VALUE: " + byteToInsert[j] );
-            assert (byteToInsert[j] == byteToTest1[j]);
-        }
+        // for ( int j = 0; j < 20; j++ )
+        // {
+        // System.out.println( "VALUE: " + byteToInsert[j] );
+        // assert (byteToInsert[j] == byteToTest1[j]);
+        // }
+        
+        assertEquals( byteToInsert[9], byteToTest1[9] );
     }
 
     /**
@@ -50,6 +51,7 @@ public class BufferPoolTest extends TestCase
 
         MemoryPool memPool = new MemoryPool();
         memPool.getDisk();
+        memPool.getDiskFile();
 
         assertEquals( 0, pool.getCacheHits() );
         assertEquals( 0, pool.getCacheMisses() );

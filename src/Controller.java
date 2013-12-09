@@ -23,7 +23,7 @@ public class Controller
     private Integer numberBuffs_;
 
     // Instance to the bufferPool
-    private static BufferPool bufPool_; // TODO static
+    private static BufferPool bufPool_; 
 
     // Instance of the Memory Manager
     private static MemoryManager memoryManager_;

@@ -231,7 +231,6 @@ class AList<E> implements List<E>
     @SuppressWarnings( "unchecked" )
     private void grow()
     {
-        // TODO: may need to grow by more than one block size
         maxSize += 2*blockSize;
         E[] temp = (E[]) new Object[maxSize];
         for ( int i = 0; i < listArray.length; i++ )
