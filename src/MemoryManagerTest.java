@@ -1,6 +1,3 @@
-import java.io.IOException;
-import java.io.RandomAccessFile;
-
 import junit.framework.TestCase;
 
 /**
@@ -63,12 +60,14 @@ public class MemoryManagerTest extends TestCase
     /**
      * This function tests the merge function.
      */
+    @SuppressWarnings( "unused" )
     public void testMerge()
     {
         bufPool_ = new BufferPool( 10, 10 );
         memoryManager_ = new MemoryManager( bufPool_ );
 
-        byte[] leafNode1 = { (byte) 1, (byte) 0, (byte) 0, (byte) 0, (byte) 0 };
+        byte[] leafNode1 =
+                { (byte) 1, (byte) 0, (byte) 0, (byte) 0, (byte) 0 };
 
         byte[] leafNodeHandle1 = memoryManager_.insert( leafNode1 );
         byte[] leafNodeHandle2 = memoryManager_.insert( leafNode1 );
