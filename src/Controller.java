@@ -216,7 +216,7 @@ public class Controller
             // <Watcher name> <x> <y> is added to the bintree
             String outputString2 =
                     s[3] + " " + longitudeX + " " + latitudeY
-                            + " is added to the bintree";
+                            + " is added into the bintree";
             System.out.println( outputString2 );
         }
         else
@@ -245,7 +245,7 @@ public class Controller
         // Check to ensure the arguments are in the form: delete <user>a
         if ( s[0].contains( "delete" ) )
         {
-            String subscriberToRemove = s[1].trim();
+            String subscriberToRemove = s[0].trim();
 
             Double longitudeX = Double.parseDouble( s[1].trim() );
             Double latitudeY = Double.parseDouble( s[2].trim() );
@@ -255,7 +255,7 @@ public class Controller
                 // Displays the expected format:
                 // <Watcher name> <x> <y> is removed from the bintree
                 String removedFromBinTreeOutputString =
-                        subscriberToRemove + " " + longitudeX + " " + latitudeY
+                        longitudeX + " " + latitudeY
                                 + " is removed from the bintree";
                 System.out.println( removedFromBinTreeOutputString );
 
