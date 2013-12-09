@@ -106,7 +106,7 @@ public class MemoryManagerTest extends TestCase
         memoryBlock_.setLength( 1337 );
         assertEquals( memoryBlock_.getLength(), 1337 );
 
-        memoryBlock_.setPosition( 1337 );
-        assertEquals( memoryBlock_.getPosition(), 1337 );
+        memoryBlock_.setStartPosition( 1337 );
+        assertEquals( memoryBlock_.getStartPosition(), 1337 );
     }
 }

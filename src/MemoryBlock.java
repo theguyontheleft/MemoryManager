@@ -9,7 +9,7 @@
 public class MemoryBlock
 {
     int position_;
-    int length_;
+    private int length_;
 
     /**
      * Initializes the memory block of the free list with the necessary
@@ -24,10 +24,15 @@ public class MemoryBlock
         length_ = length;
     }
 
+    public int getEndPosition()
+    {
+        return position_ + length_;
+    }
+
     /**
      * @return the position
      */
-    public int getPosition()
+    public int getStartPosition()
     {
         return position_;
     }
@@ -36,7 +41,7 @@ public class MemoryBlock
      * @param position
      *            the position_ to set
      */
-    public void setPosition( int position )
+    public void setStartPosition( int position )
     {
         this.position_ = position;
     }

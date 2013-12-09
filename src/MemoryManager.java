@@ -88,7 +88,7 @@ public class MemoryManager
             freeList_.moveToPos( freeListPosition );
 
             MemoryBlock freeMemoryBlock = freeList_.getValue();
-            int position = freeMemoryBlock.getPosition();
+            int position = freeMemoryBlock.getStartPosition();
             handleLocation = position;
             for ( int i = 0; i < newData.length; i++, position++ )
             {
@@ -229,6 +229,7 @@ public class MemoryManager
                 new MemoryBlock( handleLocation, lengthOfFreedSpace );
 
         freeList_.insert( memoryBlock );
+        merge();
     }
 
     /**
@@ -251,8 +252,8 @@ public class MemoryManager
         {
             freeList_.getValue().setLength(
                     memoryBlockUsed.getLength() - lengthOfFreeSpaceUsed );
-            freeList_.getValue().setPosition(
-                    memoryBlockUsed.getPosition() + lengthOfFreeSpaceUsed );
+            freeList_.getValue().setStartPosition(
+                    memoryBlockUsed.getStartPosition() + lengthOfFreeSpaceUsed );
         }
         else
         // Case 2: remove memory from freelist because it's full
@@ -279,22 +280,52 @@ public class MemoryManager
      * The following functions merges two sections of the freelist arraylist if
      * they are adjacent
      * 
-     * @param firstPosition
+     * @param positionToCompare
      * @param secondPosition
-     * @return true if merged and false if not
      */
-    public boolean merge( int firstPosition, int secondPosition )
+    public void merge()
     {
-        // Make sure the position in inside the array
-        if ( freeList_.length() > firstPosition
-                || freeList_.length() > secondPosition )
+        freeList_.moveToStart();
+
+        int startCompare = freeList_.getValue().getStartPosition() - 1;
+        int endCompare =
+                startCompare + freeList_.getValue().getEndPosition() + 1;
+
+        for ( int i = 1; i < freeList_.length(); i++ )
         {
-            // TODO:
+            freeList_.moveToPos( i );
 
-            return true;
+            // extends free block to the left
+            if ( startCompare == freeList_.getValue().getEndPosition() )
+            {
+                // remove old block
+                int newStart = freeList_.getValue().getStartPosition();
+                int addLength = freeList_.getValue().getLength();
+                freeList_.remove();
+
+                // extend block to the left
+                freeList_.moveToStart();
+                freeList_.getValue().setStartPosition( newStart );
+                freeList_.getValue().setLength(
+                        freeList_.getValue().getLength() + addLength );
+                startCompare = freeList_.getValue().getStartPosition();
+
+                // returns to next item in the list
+                freeList_.moveToPos( i );
+            }
+            // extends free block to the right
+            if ( endCompare == freeList_.getValue().getStartPosition() )
+            {
+                // remove old block
+                int addLength = freeList_.getValue().getLength();
+                freeList_.remove();
+
+                // extend block to the right
+                freeList_.moveToStart();
+                freeList_.getValue().setLength(
+                        freeList_.getValue().getLength() + addLength );
+            }
         }
-
-        return false;
     }
 
     /**
