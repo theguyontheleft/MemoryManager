@@ -15,7 +15,7 @@ public class AListTest extends TestCase
      */
     public void testInsert()
     {
-        AList<Integer> myList = new AList<Integer>( 5 );
+        AList<Integer> myList = new AList<Integer>( 5, 10 );
 
         myList.insert( 4 );
         myList.insert( 3 );
@@ -43,7 +43,7 @@ public class AListTest extends TestCase
      */
     public void testRemove()
     {
-        AList<Integer> myList = new AList<Integer>( 5 );
+        AList<Integer> myList = new AList<Integer>( 5, 10 );
 
         myList.insert( 4 );
         myList.insert( 3 );
@@ -65,7 +65,7 @@ public class AListTest extends TestCase
      */
     public void testIncreaeOfSize()
     {
-        AList<Integer> myList = new AList<Integer>( 2 );
+        AList<Integer> myList = new AList<Integer>( 2, 10 );
         
         myList.insert( 1 );
         myList.insert( 2 );

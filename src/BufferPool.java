@@ -55,6 +55,14 @@ public class BufferPool implements BufferPoolADT
     private static byte[] temp;
 
     /**
+     * @return the block size
+     */
+    public int getBlockSize()
+    {
+        return blockSize;
+    }
+
+    /**
      * parameterized constructor
      * 
      * @param newDisk
@@ -66,7 +74,7 @@ public class BufferPool implements BufferPoolADT
      */
     public BufferPool( int numberOfBuffers, int newBlockSize )
     {
-        pool = new AList<Buffer>( numberOfBuffers );
+        pool = new AList<Buffer>( numberOfBuffers, newBlockSize );
 
         try
         {
@@ -476,7 +484,8 @@ public class BufferPool implements BufferPoolADT
 
             if ( output >= 0 )
             {
-                System.out.println( "Block ID of buffer" + i + " is " + output );
+                System.out
+                        .println( "Block ID of buffer" + i + " is " + output );
             }
             else
             {
@@ -485,10 +494,11 @@ public class BufferPool implements BufferPoolADT
             }
         }
     }
-    
+
     /**
      * Closes the file the memorypool uses
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     public void closeFile() throws IOException
     {

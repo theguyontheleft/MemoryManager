@@ -25,6 +25,10 @@ class AList<E> implements List<E>
      */
     private int listSize;
     /**
+     * The size of the block
+     */
+    private int blockSize;
+    /**
      * Position of current element
      */
     private int curr;
@@ -36,15 +40,17 @@ class AList<E> implements List<E>
     /**
      * Parameterized constructor
      * 
-     * @param newMaxSize
+     * @param maxNumberOfBlocks
      *            Max # of elements list can contain.
+     * @param newBlockSize
      */
     @SuppressWarnings( "unchecked" )
-    public AList( int newMaxSize )
+    public AList( int maxNumberOfBlocks, int newBlockSize )
     {
-        maxSize = newMaxSize;
+        blockSize = newBlockSize;
+        maxSize = maxNumberOfBlocks * newBlockSize;
         listSize = curr = 0;
-        listArray = (E[]) new Object[newMaxSize]; // Create listArray
+        listArray = (E[]) new Object[maxSize]; // Create listArray
     }
 
     /**
@@ -67,7 +73,7 @@ class AList<E> implements List<E>
         {
             if ( maxSize == 0 )
             {
-                maxSize = 1;
+                maxSize = blockSize;
             }
             grow();
         }
@@ -225,7 +231,8 @@ class AList<E> implements List<E>
     @SuppressWarnings( "unchecked" )
     private void grow()
     {
-        maxSize *= 2;
+        // TODO: may need to grow by more than one block size
+        maxSize += blockSize;
         E[] temp = (E[]) new Object[maxSize];
         for ( int i = 0; i < listArray.length; i++ )
         {
