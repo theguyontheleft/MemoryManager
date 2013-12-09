@@ -174,27 +174,6 @@ public class BufferPool implements BufferPoolADT
             tempPosition = 0;
             pos += numberOfBytesInBlock;
         }
-
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Old
-        // int blockNumberInFile = pos / blockSize;
-        // int blockNumberInPool = this.contains( blockNumberInFile );
-        //
-        // // if buffer was not in the buffer pool
-        // if ( blockNumberInPool == -1 )
-        // {
-        // this.getbytes( new byte[space.length], sz, pos );
-        // blockNumberInPool = this.contains( blockNumberInFile );
-        // }
-        //
-        // pool.moveToPos( blockNumberInPool );
-        //
-        // // inputs record in given location in buffer
-        // toInsert = ByteBuffer.wrap( pool.getValue().getBlock() );
-        // toInsert.position( pos - (blockNumberInFile * blockSize) );
-        // toInsert.put( space, 0, sz );
-        //
-        // pool.getValue().setBlock( toInsert.array() );
-        // pool.getValue().setDirtyBit( true );
     }
 
     /**
@@ -210,14 +189,24 @@ public class BufferPool implements BufferPoolADT
      */
     public void getbytes( byte[] space, int sz, int pos )
     {
-        int blockNumberInFile = pos / blockSize;
-        int blockNumberInPool = this.contains( blockNumberInFile );
         int bytesToRead = sz;
         int numberOfBytesInBlock = 0;
+        int tempPosition = pos;
 
         // Handle messages that span multiple blocks TODO test this
         while ( bytesToRead > 0 )
         {
+
+            int blockNumberInFile = pos / blockSize;
+
+            int blockNumberInPool = this.contains( blockNumberInFile );
+
+            // gets desired bytes from buffer pool
+            int startingByteInBlock = tempPosition % blockSize;
+
+            // Check how many bytes from record are in the current block
+            numberOfBytesInBlock = blockSize - startingByteInBlock;
+
             // if buffer is not in the pool
             if ( blockNumberInPool == -1 )
             {
@@ -285,12 +274,6 @@ public class BufferPool implements BufferPoolADT
                 cacheHits++;
             }
 
-            // gets desired bytes from buffer pool
-            int startingByteInBlock = pos % blockSize;
-
-            // Check how many bytes from record are in the current block
-            numberOfBytesInBlock = blockSize - startingByteInBlock;
-
             pool.moveToStart();
 
             // Read the bytes remaining in the block and less than the
@@ -301,9 +284,8 @@ public class BufferPool implements BufferPoolADT
                         pool.getValue().getBlock()[startingByteInBlock];
             }
 
-            // Update the remaining bytes to read and set pos to 0
-            // bytesToRead = bytesToRead - numberOfBytesInBlock;
-            pos = 0;
+            tempPosition = 0;
+            pos += numberOfBytesInBlock;
         }
     }
 
@@ -484,8 +466,7 @@ public class BufferPool implements BufferPoolADT
 
             if ( output >= 0 )
             {
-                System.out
-                        .println( "Block ID of buffer" + i + " is " + output );
+                System.out.println( "Block ID of buffer" + i + " is " + output );
             }
             else
             {
