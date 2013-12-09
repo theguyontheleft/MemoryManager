@@ -14,6 +14,9 @@ import junit.framework.TestCase;
 public class MemoryManagerTest extends TestCase
 {
     MemoryManager memoryManager_;
+    byte[] testByteArray8_;
+    byte[] testByteArray4_;
+    byte[] testByteArray2_;
 
     /**
      * Instances the objects
@@ -21,6 +24,24 @@ public class MemoryManagerTest extends TestCase
     public void setUp()
     {
         memoryManager_ = new MemoryManager();
+
+        testByteArray8_ = new byte[8];
+        for ( int j = 0; j < 8; j++ )
+        {
+            testByteArray8_[j] = (byte) j;
+        }
+
+        testByteArray4_ = new byte[4];
+        for ( int j = 0; j < 4; j++ )
+        {
+            testByteArray4_[j] = (byte) j;
+        }
+
+        testByteArray2_ = new byte[2];
+        for ( int j = 0; j < 2; j++ )
+        {
+            testByteArray2_[j] = (byte) j;
+        }
     }
 
     /**
@@ -28,8 +49,27 @@ public class MemoryManagerTest extends TestCase
      */
     public void testInsertAndRemove()
     {
-        // TODO add test cases
-        assertEquals( 1, 1 );
+        // Insert 4, insert 8, remove 4 (adds it to freespace), then insert 4
+        // into the freedspace
+        byte[] handleOfFirst4 = memoryManager_.insert( testByteArray4_ );
+        memoryManager_.insert( testByteArray8_ );
+        memoryManager_.delete( handleOfFirst4, false );
+        byte[] handleOfSecond4 = memoryManager_.insert( testByteArray4_ );
+
+        // The newly inserted four should have the same handle of the freespace
+        assertEquals( 4, handleOfSecond4.length );
+    }
+
+    /**
+     * This function tests the merge function.
+     */
+    public void testMerge()
+    {
+        memoryManager_ = new MemoryManager();
+
+        // Insert 8, then 4, then 4, then 2.
+        // Remove the first 4, remove the second
+        assertEquals( 4, 4 ); // TODO
     }
 
     /**
@@ -55,18 +95,18 @@ public class MemoryManagerTest extends TestCase
             System.err.print( "Error when testing the memory Pool: " + ex );
         }
     }
-    
+
     /**
      * Tests the MemoryBlock object used in the freelist
      */
     public void testMemoryBlock()
     {
-        MemoryBlock memoryBlock_ = new MemoryBlock(0,0);
-        
+        MemoryBlock memoryBlock_ = new MemoryBlock( 0, 0 );
+
         memoryBlock_.setLength( 1337 );
-        assertEquals(memoryBlock_.getLength(), 1337);
-        
+        assertEquals( memoryBlock_.getLength(), 1337 );
+
         memoryBlock_.setPosition( 1337 );
-        assertEquals(memoryBlock_.getPosition(), 1337);
+        assertEquals( memoryBlock_.getPosition(), 1337 );
     }
 }
