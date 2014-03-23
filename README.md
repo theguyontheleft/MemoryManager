@@ -1,15 +1,25 @@
-project4
+Memory Manager
 ========
+
+This program implements a Bintree datastructure for storing watcher records where this Bintree is stored in a disk ﬁle. There is a series of commands to process information. The main operations are inserting watchers,
+deleting watchers, locating all watchers within a certain distance of a search point, and outputting
+a traversal of the Bintree for debugging purposes.
+The Bintree and its Watcher records will reside on disk. A buﬀer pool (using the LRU replacement strategy)
+will mediate access to the disk ﬁle, and a memory manager will decide where in the disk ﬁle to store
+the Bintree nodes as well as the Watcher records. Another way to look at this is: there is a
+memory manager, which is a way to store data in a big array. The program will store the Bintree
+nodes and watcher records in the memory manager’s array. The memory manager’s array is really
+a disk ﬁle, and will use a buﬀer pool to manage the disk I/O.
 
 
 Input and Output:
 ========
 The program will be invoked from the command-line as:
-java DiskBintree <command-file-name> <numb-buffers> <buffersize>
+java DiskBintree "command-file-name" "numb-buffers" "buffersize"
 
-The <command-file-name> parameter is the name of the command input ﬁle that provides a
-series of commands to process. The <numb-buffers> parameter is the number of buﬀers in the
-buﬀer pool, and will be in the range 1–20. Parameter <buffersize> is the size of a buﬀer in the
+The "command-file-name" parameter is the name of the command input ﬁle that provides a
+series of commands to process. The "numb-buffers" parameter is the number of buﬀers in the
+buﬀer pool, and will be in the range 1–20. Parameter "buffersize" is the size of a buﬀer in the
 buﬀer pool (and therefore determines the amount of information read/written on each disk I/O
 operation).
 This program will create and maintain a disk ﬁle which stores the memory manager’s array. The
@@ -26,27 +36,27 @@ rated by spaces), one command for each line. The commands will be read from the 
 command line parameter 1, and the output from the command will be written to standard output.
 
 
-add <x> <y> <name>
+"add x y name"
 Adds a watcher record to the bintree. The X and Y coordinates are
 longitude and latitude, respectively, and so range between (-180, 180) and (-90, 90), resprectively.
 On successfully adding a record, this program will print
-<name> <x> <y> is added to the bintree
+"name x y is added to the bintree"
 If the record duplicates the X and Y coordinates of an existing record then the program will reject it
 and print
-<name> <x> <y> duplicates a watcher already in the bintree
+"name x y duplicates a watcher already in the bintree"
 Next is the delete command, which looks as follows.
-delete <x> <y>
-If successful, print
-<name> <x> <y> is removed from the bintree
+"delete x y"
+If successful, it prints
+"name x y is removed from the bintree"
 If a record with those coordiantes does not exist, then print
-There is no record at <x> <y> in the bintree
+"There is no record at x y in the bintree"
 The search command looks as follows.
-search <x> <y> <radius>
+"search x y radius"
 First the program will print out the line
-Search <x> <y> returned the following watchers:
+"Search x y returned the following watchers:"
 Then it will print out each record that lies in the search circle listing its name and position,
 one record to each line. After the program completes searching, it will print out
-Watcher search caused <number> bintree nodes to be visited.
+"Watcher search caused 'number' bintree nodes to be visited."
 Finally, there is the debug command. It will print a traversal for the bintree nodes. After that, it will print the block IDs of the blocks currently
 contained in the buﬀerpool in order from most recently to least recently used. Note that “Block
 ID” simply refers to the block number, starting with 0. Thus, if the block size is 1024 bytes, then
