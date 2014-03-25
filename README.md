@@ -1,16 +1,7 @@
 Memory Manager
 ========
 
-This program implements a Bintree datastructure for storing watcher records where this Bintree is stored in a disk ﬁle. There is a series of commands to process information. The main operations are inserting watchers,
-deleting watchers, locating all watchers within a certain distance of a search point, and outputting
-a traversal of the Bintree for debugging purposes.
-The Bintree and its Watcher records will reside on disk. A buﬀer pool (using the LRU replacement strategy)
-will mediate access to the disk ﬁle, and a memory manager will decide where in the disk ﬁle to store
-the Bintree nodes as well as the Watcher records. Another way to look at this is: there is a
-memory manager, which is a way to store data in a big array. The program will store the Bintree
-nodes and watcher records in the memory manager’s array. The memory manager’s array is really
-a disk ﬁle, and will use a buﬀer pool to manage the disk I/O.
-
+This program implements a Bintree datastructure (an alteration of a PR-Qaudtree with 2D buckets) for storing watcher records where this Bintree is stored in a disk ﬁle. There is a series of commands to process information. The main operations are inserting watchers, deleting watchers, locating all watchers within a certain distance of a search point, and outputting a traversal of the Bintree for debugging purposes. The Bintree and its Watcher records will reside on disk. A buﬀer pool (using the LRU replacement strategy) will mediate access to the disk ﬁle, and a memory manager will decide where in the disk ﬁle to store the Bintree nodes as well as the Watcher records. Another way to look at this is: there is a memory manager, which is a way to store data in a big array. The program will store the Bintree nodes and watcher records in the memory manager’s array. The memory manager’s array is really a disk ﬁle, and will use a buﬀer pool to manage the disk I/O.
 
 Input and Output:
 ========
